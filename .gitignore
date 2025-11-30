@@ -1,0 +1,165 @@
+###############################################################################
+# .NET / MSBuild
+###############################################################################
+[Bb]in/
+[Oo]bj/
+**/bin/
+**/obj/
+artifacts/
+*.deps.json
+*.runtimeconfig.dev.json
+*.dll
+*.exe
+*.mdb
+*.pdb
+*.cache
+*.dbmdl
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+*.nuspec
+*.nuget.props
+*.nuget.targets
+
+###############################################################################
+# Pruebas y cobertura
+###############################################################################
+TestResult*/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+*.codecoverage
+coverage/
+*.lcov
+lcov.info
+BenchmarkDotNet.Artifacts/
+
+###############################################################################
+# ASP.NET / Datos locales
+###############################################################################
+# Bases locales y journals
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+
+# IIS Express
+iisexpress/
+_IISExpress/
+
+# Publicación
+# (Si quieres versionar .pubxml, comenta la siguiente línea)
+**/Properties/PublishProfiles/*.pubxml
+**/Properties/PublishProfiles/*.pubxml.user
+*.PublishSettings
+*.publishsettings
+
+###############################################################################
+# Secretos / configuración local (no versionar)
+###############################################################################
+# Mantén comprometidos solo appsettings "base" y de ambientes compartidos; 
+# los siguientes son locales del dev.
+appsettings.Local.json
+appsettings.*.Local.json
+local.settings.json               # Azure Functions local
+*.secret.*
+secrets.json
+.env
+.env.*
+
+###############################################################################
+# IDEs y editores
+###############################################################################
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj.user
+*.psess
+*.vsp
+*.vspx
+*.svclog
+*.tlog
+*.lastcodeanalysissucceeded
+*.lastbuildstate
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains Rider / ReSharper
+.idea/
+*.sln.iml
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+# Rider: archivos no compartibles
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/shelf/
+
+###############################################################################
+# SPA/Frontend embebido (ajusta según tu stack)
+###############################################################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+wwwroot/lib/                  # LibMan restaurable
+
+###############################################################################
+# Logs / diagnósticos
+###############################################################################
+*.log
+logs/
+Logs/
+*.dmp
+*.stackdump
+
+###############################################################################
+# Seguridad / certificados locales
+###############################################################################
+*.pfx
+*.p12
+
+###############################################################################
+# Sistemas operativos
+###############################################################################
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+# Linux/otros
+*~
+.nfs*
+
+###############################################################################
+# Miscelánea
+###############################################################################
+*.bak
+*.old
+*.orig
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Sonar / análisis
+.sonar/
+.sonarqube/

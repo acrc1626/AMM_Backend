@@ -1,0 +1,17 @@
+namespace AMM.Application.DTOs.Seguridad;
+
+// Usuario
+public record UsuarioDto(int Id, string Correo, string NombreCompleto, byte EstadoUsuarioId);
+public record CrearUsuarioRequest(string Correo, string NombreCompleto, byte EstadoUsuarioId, Guid? AzureAdObjectId);
+
+// Rol
+public record RolDto(int Id, string Nombre, string? Descripcion);
+public record CrearRolRequest(string Nombre, string? Descripcion);
+
+// Permiso
+public record PermisoDto(int Id, string Codigo, string? Descripcion);
+public record CrearPermisoRequest(string Codigo, string? Descripcion);
+
+// Menu
+public record MenuDto(int Id, string Nombre, string Ruta);
+public record CrearMenuRequest(string Nombre, string Ruta);
