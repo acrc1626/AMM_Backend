@@ -47,6 +47,10 @@ public static class DependencyInjection
         services.AddScoped<AMM.Domain.Ports.Repositories.IPermisoRepository, Repositories.PermisoRepository>();
         services.AddScoped<AMM.Domain.Ports.Repositories.IMenuRepository, Repositories.MenuRepository>();
 
+        // Censo repositories
+        services.AddScoped<AMM.Domain.Ports.Repositories.ICensoRepository, Repositories.CensoRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.ICensoNovedadRepository, Repositories.CensoNovedadRepository>();
+
         return services;
     }
 }

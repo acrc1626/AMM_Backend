@@ -37,6 +37,10 @@ public static class DependencyInjection
         services.AddScoped<UseCases.Seguridad.PermisoUseCase>();
         services.AddScoped<UseCases.Seguridad.MenuUseCase>();
 
+        // Censo use cases
+        services.AddScoped<UseCases.Censos.CensoUseCase>();
+        services.AddScoped<UseCases.Censos.CensoNovedadUseCase>();
+
         return services;
     }
 }
