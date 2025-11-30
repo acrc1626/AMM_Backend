@@ -41,6 +41,15 @@ public static class DependencyInjection
         services.AddScoped<UseCases.Censos.CensoUseCase>();
         services.AddScoped<UseCases.Censos.CensoNovedadUseCase>();
 
+        // Eventos use cases
+        services.AddScoped<UseCases.Eventos.EscabiosisUseCase>();
+        services.AddScoped<UseCases.Eventos.GeohelmintiasisUseCase>();
+        services.AddScoped<UseCases.Eventos.PediculosisUseCase>();
+        services.AddScoped<UseCases.Eventos.MalariaUseCase>();
+        services.AddScoped<UseCases.Eventos.TuberculosisUseCase>();
+        services.AddScoped<UseCases.Eventos.TuberculosisContactoUseCase>();
+        services.AddScoped<UseCases.Eventos.LeshmaniasisCutaneaUseCase>();
+
         return services;
     }
 }

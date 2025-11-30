@@ -51,6 +51,16 @@ public static class DependencyInjection
         services.AddScoped<AMM.Domain.Ports.Repositories.ICensoRepository, Repositories.CensoRepository>();
         services.AddScoped<AMM.Domain.Ports.Repositories.ICensoNovedadRepository, Repositories.CensoNovedadRepository>();
 
+        // Eventos repositories
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoRepository, Repositories.EventoRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEscabiosisRepository, Repositories.EscabiosisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IGeohelmintiasisRepository, Repositories.GeohelmintiasisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IPediculosisRepository, Repositories.PediculosisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IMalariaRepository, Repositories.MalariaRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.ITuberculosisRepository, Repositories.TuberculosisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.ITuberculosisContactoRepository, Repositories.TuberculosisContactoRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.ILeshmaniasisCutaneaRepository, Repositories.LeshmaniasisCutaneaRepository>();
+
         return services;
     }
 }

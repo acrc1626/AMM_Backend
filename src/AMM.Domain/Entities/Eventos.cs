@@ -14,52 +14,57 @@ public class Evento : AuditableEntity
 {
     public long Id { get; set; }
     public long PacienteId { get; set; }
-    public byte TipoId { get; set; }
-    public DateTime FechaEvento { get; set; }
+    public byte EventoTipoId { get; set; }
+    public DateTime Fecha { get; set; }
+    public string? Observacion { get; set; }
 
     public virtual Paciente Paciente { get; set; } = null!;
-    public virtual EventoTipo Tipo { get; set; } = null!;
+    public virtual EventoTipo EventoTipo { get; set; } = null!;
     public virtual Estado Estado { get; set; } = null!;
 }
 
-public class EventoEscabiosis : Evento
+public class Escabiosis : Evento
 {
-    public byte? Severidad { get; set; }
-    public string? Localizacion { get; set; }
+    public bool? Tratado { get; set; }
+    public bool? CierreControl { get; set; }
 }
 
-public class EventoGeohelmintiasis : Evento
+public class Geohelmintiasis : Evento
 {
-    public string? TipoPrueba { get; set; }
+    public bool? Tratado { get; set; }
+    public bool? CierreControl { get; set; }
+    public bool? Laboratorio { get; set; }
+}
+
+public class Pediculosis : Evento
+{
+    public bool? Tratado { get; set; }
+    public bool? CierreControl { get; set; }
+}
+
+public class Malaria : Evento
+{
+    public bool? Gota { get; set; }
     public string? Resultado { get; set; }
 }
 
-public class EventoPediculosis : Evento
+public class Tuberculosis : Evento
 {
-    public byte? Grado { get; set; }
+    public bool? Sintomatico { get; set; }
+    public string? Resultado { get; set; }
 }
 
-public class EventoPian : Evento
+public class TuberculosisContacto : Evento
 {
-    public string? Estadio { get; set; }
+    public long? IndexId { get; set; }
+    public byte? ParentescoId { get; set; }
+
+    public virtual Paciente? Index { get; set; }
+    public virtual Parentesco? Parentesco { get; set; }
 }
 
-public class EventoTeniasisCisticercosis : Evento
+public class LeshmaniasisCutanea : Evento
 {
-    public bool? Teniasis { get; set; }
-    public bool? Cisticercosis { get; set; }
-}
-
-public class EventoTracoma : Evento
-{
-    public int? CriterioExclusionId { get; set; }
-    public bool? ExaminadoTt { get; set; }
-    public byte? Triquiasis { get; set; }
-    public string? OpacidadCorneal { get; set; }
-}
-
-public class EventoTungiasis : Evento
-{
+    public bool? Cicatriz { get; set; }
     public int? NumeroLesiones { get; set; }
-    public string? Complicaciones { get; set; }
 }

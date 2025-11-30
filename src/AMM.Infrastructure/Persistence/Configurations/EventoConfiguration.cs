@@ -14,8 +14,9 @@ public class EventoConfiguration : IEntityTypeConfiguration<Evento>
         builder.Property(e => e.Id).HasColumnName("id");
 
         builder.Property(e => e.PacienteId).HasColumnName("paciente_id");
-        builder.Property(e => e.TipoId).HasColumnName("tipo_id");
-        builder.Property(e => e.FechaEvento).HasColumnName("fecha_evento").HasColumnType("date");
+        builder.Property(e => e.EventoTipoId).HasColumnName("evento_tipo_id");
+        builder.Property(e => e.Fecha).HasColumnName("fecha").HasColumnType("date");
+        builder.Property(e => e.Observacion).HasColumnName("observacion").HasMaxLength(500);
 
         // Auditable
         builder.Property(e => e.CreadoEn).HasColumnName("creado_en").HasColumnType("datetime2(0)").HasDefaultValueSql("sysutcdatetime()");
@@ -26,84 +27,88 @@ public class EventoConfiguration : IEntityTypeConfiguration<Evento>
 
         // Relationships
         builder.HasOne(d => d.Paciente).WithMany().HasForeignKey(d => d.PacienteId);
-        builder.HasOne(d => d.Tipo).WithMany().HasForeignKey(d => d.TipoId).OnDelete(DeleteBehavior.ClientSetNull);
+        builder.HasOne(d => d.EventoTipo).WithMany().HasForeignKey(d => d.EventoTipoId).OnDelete(DeleteBehavior.ClientSetNull);
         builder.HasOne(d => d.Estado).WithMany().HasForeignKey(d => d.EstadoId).OnDelete(DeleteBehavior.ClientSetNull);
     }
 }
 
-public class EventoEscabiosisConfiguration : IEntityTypeConfiguration<EventoEscabiosis>
+public class EscabiosisConfiguration : IEntityTypeConfiguration<Escabiosis>
 {
-    public void Configure(EntityTypeBuilder<EventoEscabiosis> builder)
+    public void Configure(EntityTypeBuilder<Escabiosis> builder)
     {
-        builder.ToTable("EVENTO_ESCABIOSIS");
+        builder.ToTable("ESCABIOSIS");
         builder.Property(e => e.Id).HasColumnName("evento_id");
-        builder.Property(e => e.Severidad).HasColumnName("severidad");
-        builder.Property(e => e.Localizacion).HasColumnName("localizacion").HasMaxLength(200);
+        builder.Property(e => e.Tratado).HasColumnName("tratado");
+        builder.Property(e => e.CierreControl).HasColumnName("cierre_control");
     }
 }
 
-public class EventoGeohelmintiasisConfiguration : IEntityTypeConfiguration<EventoGeohelmintiasis>
+public class GeohelmintiasisConfiguration : IEntityTypeConfiguration<Geohelmintiasis>
 {
-    public void Configure(EntityTypeBuilder<EventoGeohelmintiasis> builder)
+    public void Configure(EntityTypeBuilder<Geohelmintiasis> builder)
     {
-        builder.ToTable("EVENTO_GEOHELMINTIASIS");
+        builder.ToTable("GEOHELMINTIASIS");
         builder.Property(e => e.Id).HasColumnName("evento_id");
-        builder.Property(e => e.TipoPrueba).HasColumnName("tipo_prueba").HasMaxLength(80).IsUnicode(false);
-        builder.Property(e => e.Resultado).HasColumnName("resultado").HasMaxLength(80).IsUnicode(false);
+        builder.Property(e => e.Tratado).HasColumnName("tratado");
+        builder.Property(e => e.CierreControl).HasColumnName("cierre_control");
+        builder.Property(e => e.Laboratorio).HasColumnName("laboratorio");
     }
 }
 
-public class EventoPediculosisConfiguration : IEntityTypeConfiguration<EventoPediculosis>
+public class PediculosisConfiguration : IEntityTypeConfiguration<Pediculosis>
 {
-    public void Configure(EntityTypeBuilder<EventoPediculosis> builder)
+    public void Configure(EntityTypeBuilder<Pediculosis> builder)
     {
-        builder.ToTable("EVENTO_PEDICULOSIS");
+        builder.ToTable("PEDICULOSIS");
         builder.Property(e => e.Id).HasColumnName("evento_id");
-        builder.Property(e => e.Grado).HasColumnName("grado");
+        builder.Property(e => e.Tratado).HasColumnName("tratado");
+        builder.Property(e => e.CierreControl).HasColumnName("cierre_control");
     }
 }
 
-public class EventoPianConfiguration : IEntityTypeConfiguration<EventoPian>
+public class MalariaConfiguration : IEntityTypeConfiguration<Malaria>
 {
-    public void Configure(EntityTypeBuilder<EventoPian> builder)
+    public void Configure(EntityTypeBuilder<Malaria> builder)
     {
-        builder.ToTable("EVENTO_PIAN");
+        builder.ToTable("MALARIA");
         builder.Property(e => e.Id).HasColumnName("evento_id");
-        builder.Property(e => e.Estadio).HasColumnName("estadio").HasMaxLength(50).IsUnicode(false);
+        builder.Property(e => e.Gota).HasColumnName("gota");
+        builder.Property(e => e.Resultado).HasColumnName("resultado").HasMaxLength(100);
     }
 }
 
-public class EventoTeniasisCisticercosisConfiguration : IEntityTypeConfiguration<EventoTeniasisCisticercosis>
+public class TuberculosisConfiguration : IEntityTypeConfiguration<Tuberculosis>
 {
-    public void Configure(EntityTypeBuilder<EventoTeniasisCisticercosis> builder)
+    public void Configure(EntityTypeBuilder<Tuberculosis> builder)
     {
-        builder.ToTable("EVENTO_TENIASIS_CISTICERCOSIS");
+        builder.ToTable("TUBERCULOSIS");
         builder.Property(e => e.Id).HasColumnName("evento_id");
-        builder.Property(e => e.Teniasis).HasColumnName("teniasis");
-        builder.Property(e => e.Cisticercosis).HasColumnName("cisticercosis");
+        builder.Property(e => e.Sintomatico).HasColumnName("sintomatico");
+        builder.Property(e => e.Resultado).HasColumnName("resultado").HasMaxLength(100);
     }
 }
 
-public class EventoTracomaConfiguration : IEntityTypeConfiguration<EventoTracoma>
+public class TuberculosisContactoConfiguration : IEntityTypeConfiguration<TuberculosisContacto>
 {
-    public void Configure(EntityTypeBuilder<EventoTracoma> builder)
+    public void Configure(EntityTypeBuilder<TuberculosisContacto> builder)
     {
-        builder.ToTable("EVENTO_TRACOMA");
+        builder.ToTable("TUBERCULOSIS_CONTACTO");
         builder.Property(e => e.Id).HasColumnName("evento_id");
-        builder.Property(e => e.CriterioExclusionId).HasColumnName("criterio_exclusion_id");
-        builder.Property(e => e.ExaminadoTt).HasColumnName("examinado_tt");
-        builder.Property(e => e.Triquiasis).HasColumnName("triquiasis");
-        builder.Property(e => e.OpacidadCorneal).HasColumnName("opacidad_corneal").HasMaxLength(50).IsUnicode(false);
+        builder.Property(e => e.IndexId).HasColumnName("index_id");
+        builder.Property(e => e.ParentescoId).HasColumnName("parentesco_id");
+
+        builder.HasOne(e => e.Index).WithMany().HasForeignKey(e => e.IndexId).OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(e => e.Parentesco).WithMany().HasForeignKey(e => e.ParentescoId).OnDelete(DeleteBehavior.ClientSetNull);
     }
 }
 
-public class EventoTungiasisConfiguration : IEntityTypeConfiguration<EventoTungiasis>
+public class LeshmaniasisCutaneaConfiguration : IEntityTypeConfiguration<LeshmaniasisCutanea>
 {
-    public void Configure(EntityTypeBuilder<EventoTungiasis> builder)
+    public void Configure(EntityTypeBuilder<LeshmaniasisCutanea> builder)
     {
-        builder.ToTable("EVENTO_TUNGIASIS");
+        builder.ToTable("LESHMANIASIS_CUTANEA");
         builder.Property(e => e.Id).HasColumnName("evento_id");
+        builder.Property(e => e.Cicatriz).HasColumnName("cicatriz");
         builder.Property(e => e.NumeroLesiones).HasColumnName("numero_lesiones");
-        builder.Property(e => e.Complicaciones).HasColumnName("complicaciones").HasMaxLength(200);
     }
 }
