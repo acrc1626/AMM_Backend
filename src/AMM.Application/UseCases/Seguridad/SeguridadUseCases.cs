@@ -15,15 +15,15 @@ public class UsuarioUseCase : CatalogoUseCase<Usuario, UsuarioDto, CrearUsuarioR
     }
 
     public Task<IReadOnlyList<UsuarioDto>> GetAllUsuariosAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new UsuarioDto(e.Id, e.Correo, e.NombreCompleto, e.EstadoUsuarioId), ct);
+        GetAllAsync(e => new UsuarioDto(e.Id, e.Correo, e.NombreCompleto, e.EstadoUsuarioId, e.ModificadoEn ?? e.CreadoEn), ct);
 
     public Task<UsuarioDto?> GetUsuarioByIdAsync(int id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new UsuarioDto(e.Id, e.Correo, e.NombreCompleto, e.EstadoUsuarioId), ct);
+        GetByIdAsync(id, e => new UsuarioDto(e.Id, e.Correo, e.NombreCompleto, e.EstadoUsuarioId, e.ModificadoEn ?? e.CreadoEn), ct);
 
     public async Task<UsuarioDto?> GetByCorreoAsync(string correo, CancellationToken ct = default)
     {
         var usuario = await _usuarioRepository.GetByCorreoAsync(correo, ct);
-        return usuario != null ? new UsuarioDto(usuario.Id, usuario.Correo, usuario.NombreCompleto, usuario.EstadoUsuarioId) : null;
+        return usuario != null ? new UsuarioDto(usuario.Id, usuario.Correo, usuario.NombreCompleto, usuario.EstadoUsuarioId, usuario.ModificadoEn ?? usuario.CreadoEn) : null;
     }
 }
 
