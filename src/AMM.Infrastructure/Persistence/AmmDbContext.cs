@@ -54,6 +54,18 @@ public class AmmDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.ToTable("USUARIO");
+
+            // Ignorar EstadoId (de AuditableEntity) para que no lo mapee
+            entity.Ignore(e => e.EstadoId);
+
+            // Mapear EstadoUsuarioId a estado_usuario_id
+            entity.Property(e => e.EstadoUsuarioId)
+                  .HasColumnName("estado_usuario_id")
+                  .IsRequired();
+        });
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
