@@ -36,6 +36,54 @@ public class UsuariosController : CatalogControllerBase<UsuarioDto, int>
         var result = await _useCase.GetByCorreoAsync(correo, cancellationToken);
         return HandleResult(result);
     }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UsuarioDto>> Create(CrearUsuarioRequest request, CancellationToken cancellationToken)
+    {
+        var usuario = "system"; // TODO: obtener del contexto de autenticación
+        var result = await _useCase.CreateAsync(request, usuario, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(int id, UpdateUsuarioRequest request, CancellationToken cancellationToken)
+    {
+        if (id != request.Id) 
+            return BadRequest("ID mismatch");
+        
+        try
+        {
+            var usuario = "system"; // TODO: obtener del contexto de autenticación
+            await _useCase.UpdateAsync(request, usuario, cancellationToken);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var usuario = "system"; // TODO: obtener del contexto de autenticación
+            await _useCase.DeleteAsync(id, usuario, cancellationToken);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }
 
 [ApiController]

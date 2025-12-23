@@ -25,6 +25,57 @@ public class UsuarioUseCase : CatalogoUseCase<Usuario, UsuarioDto, CrearUsuarioR
         var usuario = await _usuarioRepository.GetByCorreoAsync(correo, ct);
         return usuario != null ? new UsuarioDto(usuario.Id, usuario.Correo, usuario.NombreCompleto, usuario.EstadoUsuarioId, usuario.ModificadoEn ?? usuario.CreadoEn) : null;
     }
+
+    public async Task<UsuarioDto> CreateAsync(CrearUsuarioRequest request, string usuarioActual, CancellationToken ct = default)
+    {
+        var entity = new Usuario
+        {
+            Correo = request.Correo,
+            NombreCompleto = request.NombreCompleto,
+            EstadoUsuarioId = request.EstadoUsuarioId,
+            AzureAdObjectId = request.AzureAdObjectId,
+            CreadoEn = DateTime.UtcNow,
+            CreadoPor = usuarioActual,
+            EstadoId = 1 // Estado activo por defecto
+        };
+
+        var created = await _usuarioRepository.AddAsync(entity, ct);
+        await _usuarioRepository.SaveChangesAsync(ct);
+        
+        var result = await _usuarioRepository.GetByIdAsync(created.Id, ct);
+        return new UsuarioDto(result!.Id, result.Correo, result.NombreCompleto, result.EstadoUsuarioId, result.ModificadoEn ?? result.CreadoEn);
+    }
+
+    public async Task UpdateAsync(UpdateUsuarioRequest request, string usuarioActual, CancellationToken ct = default)
+    {
+        var entity = await _usuarioRepository.GetByIdAsync(request.Id, ct);
+        if (entity == null) throw new KeyNotFoundException($"Usuario con ID {request.Id} no encontrado");
+
+        entity.Correo = request.Correo;
+        entity.NombreCompleto = request.NombreCompleto;
+        entity.EstadoUsuarioId = request.EstadoUsuarioId;
+        entity.AzureAdObjectId = request.AzureAdObjectId;
+        entity.EntidadId = request.EntidadId;
+        entity.ModificadoEn = DateTime.UtcNow;
+        entity.ModificadoPor = usuarioActual;
+
+        await _usuarioRepository.UpdateAsync(entity, ct);
+        await _usuarioRepository.SaveChangesAsync(ct);
+    }
+
+    public async Task DeleteAsync(int id, string usuarioActual, CancellationToken ct = default)
+    {
+        var entity = await _usuarioRepository.GetByIdAsync(id, ct);
+        if (entity == null) throw new KeyNotFoundException($"Usuario con ID {id} no encontrado");
+
+        // Soft delete: cambiar estado a inactivo
+        entity.EstadoId = 2; 
+        entity.ModificadoEn = DateTime.UtcNow;
+        entity.ModificadoPor = usuarioActual;
+
+        await _usuarioRepository.UpdateAsync(entity, ct);
+        await _usuarioRepository.SaveChangesAsync(ct);
+    }
 }
 
 public class RolUseCase : CatalogoUseCase<Rol, RolDto, CrearRolRequest, int>

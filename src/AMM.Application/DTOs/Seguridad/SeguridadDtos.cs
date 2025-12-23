@@ -3,6 +3,7 @@ namespace AMM.Application.DTOs.Seguridad;
 // Usuario
 public record UsuarioDto(int Id, string Correo, string NombreCompleto, byte EstadoUsuarioId, DateTime? ModificadoEn);
 public record CrearUsuarioRequest(string Correo, string NombreCompleto, byte EstadoUsuarioId, Guid? AzureAdObjectId);
+public record UpdateUsuarioRequest(int Id, string Correo, string NombreCompleto, byte EstadoUsuarioId, Guid? AzureAdObjectId, int? EntidadId);
 
 // Rol
 public record RolDto(int Id, string Nombre, string? Descripcion);
