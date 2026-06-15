@@ -1,4 +1,9 @@
+using AMM.Application.Interfaces;
+using AMM.Application.Settings;
+using AMM.Infrastructure.Interceptors;
 using AMM.Infrastructure.Persistence;
+using AMM.Infrastructure.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,10 +14,19 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AmmDbContext>(options =>
+        services.AddHttpContextAccessor();
+        services.AddScoped<AuditInterceptor>();
+
+        services.AddDbContext<AmmDbContext>((sp, options) =>
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly(typeof(AmmDbContext).Assembly.FullName)));
+                b => b.MigrationsAssembly(typeof(AmmDbContext).Assembly.FullName))
+            .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
+
+        // Security services
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IPasswordHasher, Security.PasswordHasher>();
+
 
         // Register repositories (adapters)
         services.AddScoped<AMM.Domain.Ports.IPacienteRepository, Repositories.PacienteRepository>();

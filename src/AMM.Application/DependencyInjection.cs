@@ -7,6 +7,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        // Auth use cases
+        services.AddScoped<UseCases.Auth.LoginUseCase>();
+        services.AddScoped<UseCases.Auth.SetPasswordUseCase>();
+
         // Register use cases
         services.AddScoped<CrearPacienteUseCase>();
         services.AddScoped<GetPacienteByIdUseCase>();

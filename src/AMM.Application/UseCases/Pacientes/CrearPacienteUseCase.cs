@@ -1,4 +1,5 @@
 using AMM.Application.DTOs;
+using AMM.Domain.Constants;
 using AMM.Domain.Entities;
 using AMM.Domain.Ports;
 
@@ -19,6 +20,8 @@ public class CrearPacienteUseCase
 
     public async Task<PacienteDto> ExecuteAsync(CrearPacienteRequest request, string usuarioActual, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         // Business rule: Check if patient already exists
         var existente = await _pacienteRepository.GetByDocumentoAsync(
             request.TipoDocumentoId, 
@@ -45,7 +48,7 @@ public class CrearPacienteUseCase
             PuebloIndigenaId = request.PuebloIndigenaId,
             CreadoEn = DateTime.UtcNow,
             CreadoPor = usuarioActual,
-            EstadoId = 1 // Active
+            EstadoId = EstadoId.Activo
         };
 
         var resultado = await _pacienteRepository.AddAsync(paciente, cancellationToken);
@@ -65,10 +68,10 @@ public class CrearPacienteUseCase
         return new PacienteDto
         {
             Id = paciente.Id,
-            TipoDocumento = paciente.TipoDocumentoId.ToString(), // TODO: Load from navigation property
+            TipoDocumento = paciente.TipoDocumento?.Descripcion ?? paciente.TipoDocumentoId.ToString(),
             Documento = paciente.Documento,
             NombreCompleto = nombreCompleto,
-            Sexo = paciente.SexoId.ToString(), // TODO: Load from navigation property
+            Sexo = paciente.Sexo?.Descripcion ?? paciente.SexoId.ToString(),
             FechaNacimiento = paciente.FechaNacimiento,
             Edad = edad
         };

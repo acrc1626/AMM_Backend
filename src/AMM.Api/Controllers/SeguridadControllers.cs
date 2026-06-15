@@ -1,4 +1,5 @@
 using AMM.Api.Controllers.Base;
+using AMM.Application.DTOs.Common;
 using AMM.Application.DTOs.Seguridad;
 using AMM.Application.UseCases.Seguridad;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,17 @@ public class UsuariosController : CatalogControllerBase<UsuarioDto, int>
         return Ok(result);
     }
 
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<UsuarioDto>>> GetAllPaged(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        var result = await _useCase.GetAllUsuariosPagedAsync(page, pageSize, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public override async Task<ActionResult<UsuarioDto>> GetById(int id, CancellationToken cancellationToken)
     {
@@ -42,7 +54,7 @@ public class UsuariosController : CatalogControllerBase<UsuarioDto, int>
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UsuarioDto>> Create(CrearUsuarioRequest request, CancellationToken cancellationToken)
     {
-        var usuario = "system"; // TODO: obtener del contexto de autenticación
+        var usuario = UsuarioActual;
         var result = await _useCase.CreateAsync(request, usuario, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
@@ -58,7 +70,7 @@ public class UsuariosController : CatalogControllerBase<UsuarioDto, int>
         
         try
         {
-            var usuario = "system"; // TODO: obtener del contexto de autenticación
+            var usuario = UsuarioActual;
             await _useCase.UpdateAsync(request, usuario, cancellationToken);
             return NoContent();
         }
@@ -75,7 +87,7 @@ public class UsuariosController : CatalogControllerBase<UsuarioDto, int>
     {
         try
         {
-            var usuario = "system"; // TODO: obtener del contexto de autenticación
+            var usuario = UsuarioActual;
             await _useCase.DeleteAsync(id, usuario, cancellationToken);
             return NoContent();
         }

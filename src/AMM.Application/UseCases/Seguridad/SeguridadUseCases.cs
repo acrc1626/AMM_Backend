@@ -1,5 +1,7 @@
+using AMM.Application.DTOs.Common;
 using AMM.Application.DTOs.Seguridad;
 using AMM.Application.UseCases.Catalogos;
+using AMM.Domain.Constants;
 using AMM.Domain.Entities;
 using AMM.Domain.Ports.Repositories;
 
@@ -16,6 +18,9 @@ public class UsuarioUseCase : CatalogoUseCase<Usuario, UsuarioDto, CrearUsuarioR
 
     public Task<IReadOnlyList<UsuarioDto>> GetAllUsuariosAsync(CancellationToken ct = default) =>
         GetAllAsync(e => new UsuarioDto(e.Id, e.Correo, e.NombreCompleto, e.EstadoUsuarioId, e.ModificadoEn ?? e.CreadoEn), ct);
+
+    public Task<PagedResult<UsuarioDto>> GetAllUsuariosPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new UsuarioDto(e.Id, e.Correo, e.NombreCompleto, e.EstadoUsuarioId, e.ModificadoEn ?? e.CreadoEn), page, pageSize, ct);
 
     public Task<UsuarioDto?> GetUsuarioByIdAsync(int id, CancellationToken ct = default) =>
         GetByIdAsync(id, e => new UsuarioDto(e.Id, e.Correo, e.NombreCompleto, e.EstadoUsuarioId, e.ModificadoEn ?? e.CreadoEn), ct);
@@ -36,7 +41,7 @@ public class UsuarioUseCase : CatalogoUseCase<Usuario, UsuarioDto, CrearUsuarioR
             AzureAdObjectId = request.AzureAdObjectId,
             CreadoEn = DateTime.UtcNow,
             CreadoPor = usuarioActual,
-            EstadoId = 1 // Estado activo por defecto
+            EstadoId = Domain.Constants.EstadoId.Activo
         };
 
         var created = await _usuarioRepository.AddAsync(entity, ct);
@@ -69,7 +74,7 @@ public class UsuarioUseCase : CatalogoUseCase<Usuario, UsuarioDto, CrearUsuarioR
         if (entity == null) throw new KeyNotFoundException($"Usuario con ID {id} no encontrado");
 
         // Soft delete: cambiar estado a inactivo
-        entity.EstadoId = 2; 
+        entity.EstadoId = Domain.Constants.EstadoId.Inactivo;
         entity.ModificadoEn = DateTime.UtcNow;
         entity.ModificadoPor = usuarioActual;
 

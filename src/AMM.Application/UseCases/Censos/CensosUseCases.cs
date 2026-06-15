@@ -1,4 +1,5 @@
 using AMM.Application.DTOs.Censos;
+using AMM.Application.DTOs.Common;
 using AMM.Application.UseCases.Catalogos;
 using AMM.Domain.Entities;
 using AMM.Domain.Ports.Repositories;
@@ -17,6 +18,9 @@ public class CensoUseCase : CatalogoUseCase<Censo, CensoDto, CrearCensoRequest, 
     public Task<IReadOnlyList<CensoDto>> GetAllCensosAsync(CancellationToken ct = default) =>
         GetAllAsync(MapToDto, ct);
 
+    public Task<PagedResult<CensoDto>> GetAllCensosPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(MapToDto, page, pageSize, ct);
+
     public Task<CensoDto?> GetCensoByIdAsync(long id, CancellationToken ct = default) =>
         GetByIdAsync(id, MapToDto, ct);
 
@@ -28,6 +32,9 @@ public class CensoUseCase : CatalogoUseCase<Censo, CensoDto, CrearCensoRequest, 
 
     public async Task<CensoDto> CreateAsync(CrearCensoRequest request, string usuarioActual, CancellationToken ct = default)
     {
+        if (request.PacienteId is null)
+            throw new ArgumentException("El censo debe estar asociado a un paciente.", nameof(request));
+
         var entity = new Censo
         {
             TipoEntornoId = request.TipoEntornoId,

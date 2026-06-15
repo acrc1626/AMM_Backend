@@ -10,6 +10,7 @@ public class Usuario : AuditableEntity
     public Guid? AzureAdObjectId { get; set; }
     public string Correo { get; set; } = null!;
     public string NombreCompleto { get; set; } = null!;
+    public string? PasswordHash { get; set; }
     public int? EntidadId { get; set; }
     public byte EstadoUsuarioId { get; set; }
 

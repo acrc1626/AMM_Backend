@@ -1,3 +1,4 @@
+using AMM.Application.DTOs.Common;
 using AMM.Domain.Ports.Repositories;
 
 namespace AMM.Application.UseCases.Catalogos;
@@ -5,7 +6,7 @@ namespace AMM.Application.UseCases.Catalogos;
 /// <summary>
 /// Generic use case for catalog entities CRUD operations
 /// </summary>
-public class CatalogoUseCase<TEntity, TDto, TCreateRequest, TId> 
+public class CatalogoUseCase<TEntity, TDto, TCreateRequest, TId>
     where TEntity : class
 {
     protected readonly ICatalogRepository<TEntity> _repository;
@@ -16,16 +17,30 @@ public class CatalogoUseCase<TEntity, TDto, TCreateRequest, TId>
     }
 
     public virtual async Task<IReadOnlyList<TDto>> GetAllAsync(
-        Func<TEntity, TDto> mapper, 
+        Func<TEntity, TDto> mapper,
         CancellationToken cancellationToken = default)
     {
         var entities = await _repository.GetAllAsync(cancellationToken);
         return entities.Select(mapper).ToList();
     }
 
+    public virtual async Task<PagedResult<TDto>> GetAllPagedAsync(
+        Func<TEntity, TDto> mapper,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 1000);
+        var skip = (page - 1) * pageSize;
+        var total = await _repository.GetCountAsync(cancellationToken);
+        var entities = await _repository.GetPagedAsync(skip, pageSize, cancellationToken);
+        return new PagedResult<TDto>(entities.Select(mapper).ToList(), total, page, pageSize);
+    }
+
     public virtual async Task<TDto?> GetByIdAsync(
-        TId id, 
-        Func<TEntity, TDto> mapper, 
+        TId id,
+        Func<TEntity, TDto> mapper,
         CancellationToken cancellationToken = default)
     {
         var entity = await _repository.GetByIdAsync(id, cancellationToken);

@@ -12,6 +12,7 @@ public class UsuarioRepository : CatalogRepository<Usuario>, IUsuarioRepository
     public async Task<Usuario?> GetByCorreoAsync(string correo, CancellationToken cancellationToken = default)
     {
         return await _dbSet
+            .Include(u => u.Roles)
             .FirstOrDefaultAsync(u => u.Correo == correo, cancellationToken);
     }
 }

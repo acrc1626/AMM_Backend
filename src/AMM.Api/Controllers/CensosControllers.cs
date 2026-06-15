@@ -1,5 +1,6 @@
 using AMM.Api.Controllers.Base;
 using AMM.Application.DTOs.Censos;
+using AMM.Application.DTOs.Common;
 using AMM.Application.UseCases.Censos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,17 @@ public class CensosController : CatalogControllerBase<CensoDto, long>
         return Ok(result);
     }
 
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<CensoDto>>> GetAllPaged(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        var result = await _useCase.GetAllCensosPagedAsync(page, pageSize, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public override async Task<ActionResult<CensoDto>> GetById(long id, CancellationToken cancellationToken)
     {
@@ -41,7 +53,7 @@ public class CensosController : CatalogControllerBase<CensoDto, long>
     [ProducesResponseType(typeof(CensoDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<CensoDto>> Create(CrearCensoRequest request, CancellationToken cancellationToken)
     {
-        var usuario = "system";
+        var usuario = UsuarioActual;
         var result = await _useCase.CreateAsync(request, usuario, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
@@ -54,7 +66,7 @@ public class CensosController : CatalogControllerBase<CensoDto, long>
         if (id != request.Id) return BadRequest("ID mismatch");
         try
         {
-            var usuario = "system";
+            var usuario = UsuarioActual;
             await _useCase.UpdateAsync(request, usuario, cancellationToken);
             return NoContent();
         }
@@ -108,7 +120,7 @@ public class CensoNovedadesController : CatalogControllerBase<CensoNovedadDto, l
     [ProducesResponseType(typeof(CensoNovedadDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<CensoNovedadDto>> Create(CrearCensoNovedadRequest request, CancellationToken cancellationToken)
     {
-        var usuario = "system";
+        var usuario = UsuarioActual;
         var result = await _useCase.CreateAsync(request, usuario, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
@@ -121,7 +133,7 @@ public class CensoNovedadesController : CatalogControllerBase<CensoNovedadDto, l
         if (id != request.Id) return BadRequest("ID mismatch");
         try
         {
-            var usuario = "system";
+            var usuario = UsuarioActual;
             await _useCase.UpdateAsync(request, usuario, cancellationToken);
             return NoContent();
         }

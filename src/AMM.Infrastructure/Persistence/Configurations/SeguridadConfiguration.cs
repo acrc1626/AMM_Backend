@@ -16,6 +16,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
         builder.Property(e => e.AzureAdObjectId).HasColumnName("azure_ad_object_id");
         builder.Property(e => e.Correo).HasColumnName("correo").HasMaxLength(256).IsUnicode(false);
         builder.Property(e => e.NombreCompleto).HasColumnName("nombre_completo").HasMaxLength(200);
+        builder.Property(e => e.PasswordHash).HasColumnName("password_hash").HasMaxLength(512).IsUnicode(false);
         builder.Property(e => e.EntidadId).HasColumnName("entidad_id");
         builder.Property(e => e.EstadoUsuarioId).HasColumnName("estado_usuario_id");
 

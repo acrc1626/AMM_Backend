@@ -1,4 +1,5 @@
 using AMM.Api.Controllers.Base;
+using AMM.Application.DTOs.Common;
 using AMM.Application.DTOs.Eventos;
 using AMM.Application.UseCases.Eventos;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,14 @@ public class EscabiosisController : CatalogControllerBase<EscabiosisDto, long>
     {
         var result = await _useCase.GetAllAsync(cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<EscabiosisDto>>> GetAllPaged(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
     }
 
     [HttpGet("{id}")]
@@ -49,6 +58,14 @@ public class GeohelmintiasisController : CatalogControllerBase<GeohelmintiasisDt
         return Ok(result);
     }
 
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<GeohelmintiasisDto>>> GetAllPaged(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
+    }
+
     [HttpGet("{id}")]
     public override async Task<ActionResult<GeohelmintiasisDto>> GetById(long id, CancellationToken cancellationToken)
     {
@@ -73,6 +90,14 @@ public class PediculosisController : CatalogControllerBase<PediculosisDto, long>
     {
         var result = await _useCase.GetAllAsync(cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<PediculosisDto>>> GetAllPaged(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
     }
 
     [HttpGet("{id}")]
@@ -101,6 +126,14 @@ public class MalariaController : CatalogControllerBase<MalariaDto, long>
         return Ok(result);
     }
 
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<MalariaDto>>> GetAllPaged(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
+    }
+
     [HttpGet("{id}")]
     public override async Task<ActionResult<MalariaDto>> GetById(long id, CancellationToken cancellationToken)
     {
@@ -125,6 +158,14 @@ public class TuberculosisController : CatalogControllerBase<TuberculosisDto, lon
     {
         var result = await _useCase.GetAllAsync(cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<TuberculosisDto>>> GetAllPaged(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
     }
 
     [HttpGet("{id}")]
@@ -153,6 +194,14 @@ public class TuberculosisContactoController : CatalogControllerBase<Tuberculosis
         return Ok(result);
     }
 
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<TuberculosisContactoDto>>> GetAllPaged(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
+    }
+
     [HttpGet("{id}")]
     public override async Task<ActionResult<TuberculosisContactoDto>> GetById(long id, CancellationToken cancellationToken)
     {
@@ -177,6 +226,14 @@ public class LeshmaniasisCutaneaController : CatalogControllerBase<LeshmaniasisC
     {
         var result = await _useCase.GetAllAsync(cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<LeshmaniasisCutaneaDto>>> GetAllPaged(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        pageSize = Math.Min(pageSize, 100);
+        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
     }
 
     [HttpGet("{id}")]

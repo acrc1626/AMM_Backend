@@ -1,3 +1,4 @@
+using AMM.Application.DTOs.Common;
 using AMM.Application.DTOs.Eventos;
 using AMM.Application.UseCases.Catalogos;
 using AMM.Domain.Entities;
@@ -28,9 +29,14 @@ public class EscabiosisUseCase : EventoBaseUseCase<Escabiosis, EscabiosisDto, Cr
             e.Tratado, e.CierreControl), ct);
 
     public Task<EscabiosisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new EscabiosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
+        GetByIdAsync(id, e => new EscabiosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
             e.Tratado, e.CierreControl), ct);
+
+    public Task<PagedResult<EscabiosisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new EscabiosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
+            e.Tratado, e.CierreControl), page, pageSize, ct);
 }
 
 // Geohelmintiasis
@@ -44,9 +50,14 @@ public class GeohelmintiasisUseCase : EventoBaseUseCase<Geohelmintiasis, Geohelm
             e.Tratado, e.CierreControl, e.Laboratorio), ct);
 
     public Task<GeohelmintiasisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new GeohelmintiasisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
+        GetByIdAsync(id, e => new GeohelmintiasisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
             e.Tratado, e.CierreControl, e.Laboratorio), ct);
+
+    public Task<PagedResult<GeohelmintiasisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new GeohelmintiasisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
+            e.Tratado, e.CierreControl, e.Laboratorio), page, pageSize, ct);
 }
 
 // Pediculosis
@@ -60,9 +71,14 @@ public class PediculosisUseCase : EventoBaseUseCase<Pediculosis, PediculosisDto,
             e.Tratado, e.CierreControl), ct);
 
     public Task<PediculosisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new PediculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
+        GetByIdAsync(id, e => new PediculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
             e.Tratado, e.CierreControl), ct);
+
+    public Task<PagedResult<PediculosisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new PediculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
+            e.Tratado, e.CierreControl), page, pageSize, ct);
 }
 
 // Malaria
@@ -76,9 +92,14 @@ public class MalariaUseCase : EventoBaseUseCase<Malaria, MalariaDto, CrearMalari
             e.Gota, e.Resultado), ct);
 
     public Task<MalariaDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new MalariaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
+        GetByIdAsync(id, e => new MalariaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
             e.Gota, e.Resultado), ct);
+
+    public Task<PagedResult<MalariaDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new MalariaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
+            e.Gota, e.Resultado), page, pageSize, ct);
 }
 
 // Tuberculosis
@@ -92,9 +113,14 @@ public class TuberculosisUseCase : EventoBaseUseCase<Tuberculosis, TuberculosisD
             e.Sintomatico, e.Resultado), ct);
 
     public Task<TuberculosisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new TuberculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
+        GetByIdAsync(id, e => new TuberculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
             e.Sintomatico, e.Resultado), ct);
+
+    public Task<PagedResult<TuberculosisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new TuberculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
+            e.Sintomatico, e.Resultado), page, pageSize, ct);
 }
 
 // TuberculosisContacto
@@ -108,9 +134,14 @@ public class TuberculosisContactoUseCase : EventoBaseUseCase<TuberculosisContact
             e.IndexId, e.ParentescoId, e.Parentesco?.Descripcion), ct);
 
     public Task<TuberculosisContactoDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new TuberculosisContactoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
+        GetByIdAsync(id, e => new TuberculosisContactoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
             e.IndexId, e.ParentescoId, e.Parentesco?.Descripcion), ct);
+
+    public Task<PagedResult<TuberculosisContactoDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new TuberculosisContactoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
+            e.IndexId, e.ParentescoId, e.Parentesco?.Descripcion), page, pageSize, ct);
 }
 
 // LeshmaniasisCutanea
@@ -124,7 +155,12 @@ public class LeshmaniasisCutaneaUseCase : EventoBaseUseCase<LeshmaniasisCutanea,
             e.Cicatriz, e.NumeroLesiones), ct);
 
     public Task<LeshmaniasisCutaneaDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new LeshmaniasisCutaneaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
+        GetByIdAsync(id, e => new LeshmaniasisCutaneaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
             e.Cicatriz, e.NumeroLesiones), ct);
+
+    public Task<PagedResult<LeshmaniasisCutaneaDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new LeshmaniasisCutaneaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
+            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
+            e.Cicatriz, e.NumeroLesiones), page, pageSize, ct);
 }
