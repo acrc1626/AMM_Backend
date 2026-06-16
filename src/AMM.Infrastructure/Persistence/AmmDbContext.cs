@@ -58,13 +58,14 @@ public class AmmDbContext : DbContext
         {
             entity.ToTable("USUARIO");
 
-            // Ignorar EstadoId (de AuditableEntity) para que no lo mapee
             entity.Ignore(e => e.EstadoId);
 
-            // Mapear EstadoUsuarioId a estado_usuario_id
-            entity.Property(e => e.EstadoUsuarioId)
-                  .HasColumnName("estado_usuario_id")
-                  .IsRequired();
+            entity.Property(e => e.AzureAdObjectId).HasColumnName("azure_ad_object_id");
+            entity.Property(e => e.Correo).HasColumnName("correo");
+            entity.Property(e => e.NombreCompleto).HasColumnName("nombre_completo");
+            entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
+            entity.Property(e => e.EntidadId).HasColumnName("entidad_id");
+            entity.Property(e => e.EstadoUsuarioId).HasColumnName("estado_usuario_id").IsRequired();
         });
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

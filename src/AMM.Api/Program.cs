@@ -1,7 +1,9 @@
 using System.Text;
 using AMM.Application;
-using AMM.Infrastructure;
+using AMM.Application.Interfaces;
 using AMM.Application.Settings;
+using AMM.Infrastructure;
+using AMM.Infrastructure.Persistence;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -125,7 +127,7 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-// Swagger solo en Development
+// Swagger y seed de datos solo en Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -135,6 +137,12 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = "swagger";
         options.DocumentTitle = "AMM API - Documentación";
     });
+
+    using var scope = app.Services.CreateScope();
+    var db     = scope.ServiceProvider.GetRequiredService<AmmDbContext>();
+    var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+    var log    = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    await DevSeeder.SeedAsync(db, hasher, log);
 }
 
 app.UseHttpsRedirection();
