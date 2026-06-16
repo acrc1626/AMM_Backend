@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>Inicia sesión y obtiene un token JWT</summary>
+    /// <summary>Valida credenciales contra la BD y retorna un JWT.</summary>
     [HttpPost("login")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -42,7 +42,7 @@ public class AuthController : ControllerBase
         }
         catch (UnauthorizedAccessException ex)
         {
-            _logger.LogWarning("Intento de login fallido: {Correo} — {Mensaje}", request.Correo, ex.Message);
+            _logger.LogWarning("Login fallido: {Correo}", request.Correo);
             return Unauthorized(new ProblemDetails
             {
                 Title = "Credenciales inválidas",
@@ -52,7 +52,23 @@ public class AuthController : ControllerBase
         }
     }
 
-    /// <summary>Cambia la contraseña del usuario autenticado</summary>
+    /// <summary>Devuelve la información del usuario autenticado actualmente.</summary>
+    [HttpGet("me")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Me()
+    {
+        var claims = User.Claims.Select(c => new { c.Type, c.Value });
+        return Ok(new
+        {
+            Sub   = User.FindFirstValue(ClaimTypes.NameIdentifier),
+            Email = User.FindFirstValue(ClaimTypes.Email),
+            Name  = User.FindFirstValue(ClaimTypes.Name),
+            Roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value)
+        });
+    }
+
+    /// <summary>Cambia la contraseña del usuario autenticado.</summary>
     [HttpPut("change-password")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -73,17 +89,14 @@ public class AuthController : ControllerBase
         {
             return Unauthorized(new ProblemDetails
             {
-                Title = "Contraseña incorrecta",
+                Title  = "Contraseña incorrecta",
                 Detail = ex.Message,
                 Status = StatusCodes.Status401Unauthorized
             });
         }
     }
 
-    /// <summary>
-    /// Asigna contraseña inicial a un usuario (solo administradores).
-    /// Usar en la primera configuración del sistema.
-    /// </summary>
+    /// <summary>Asigna contraseña inicial a un usuario (solo administradores).</summary>
     [HttpPost("set-password")]
     [Authorize(Roles = "Administrador")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -105,21 +118,5 @@ public class AuthController : ControllerBase
         {
             return NotFound();
         }
-    }
-
-    /// <summary>Devuelve la información del usuario autenticado actualmente</summary>
-    [HttpGet("me")]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult Me()
-    {
-        var claims = User.Claims.Select(c => new { c.Type, c.Value });
-        return Ok(new
-        {
-            Sub = User.FindFirstValue(ClaimTypes.NameIdentifier),
-            Email = User.FindFirstValue(ClaimTypes.Email),
-            Name = User.FindFirstValue(ClaimTypes.Name),
-            Roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value)
-        });
     }
 }

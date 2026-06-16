@@ -28,6 +28,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        // Evita que el DevSeeder de Program.cs corra (requiere IsDevelopment())
+        builder.UseEnvironment("Testing");
+
         // ── 1. Override JWT + CORS config ────────────────────────────────────────
         builder.ConfigureAppConfiguration((_, config) =>
             config.AddInMemoryCollection(new Dictionary<string, string?>
