@@ -34,6 +34,7 @@ TestResults/
 *.codecoverage
 coverage/
 coverage-report*/
+coverage-combined*/
 *.lcov
 lcov.info
 BenchmarkDotNet.Artifacts/

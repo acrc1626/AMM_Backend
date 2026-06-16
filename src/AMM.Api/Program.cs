@@ -67,23 +67,31 @@ builder.Services.AddSwaggerGen(options =>
 var jwtSection = builder.Configuration.GetSection(JwtSettings.SectionName);
 builder.Services.Configure<JwtSettings>(jwtSection);
 
-var jwtSettings = jwtSection.Get<JwtSettings>()
-    ?? throw new InvalidOperationException("Falta la sección 'Jwt' en appsettings.json.");
+// Validar que la sección existe al arrancar (rápido-fail)
+if (jwtSection.Get<JwtSettings>() is null)
+    throw new InvalidOperationException("Falta la sección 'Jwt' en appsettings.json.");
 
+// Registrar sin parámetros fijos: la configuración se resuelve desde IOptions<JwtSettings>
+// en tiempo de ejecución, lo que permite que las pruebas inyecten sus propios valores.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddJwtBearer();
+
+builder.Services
+    .AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+    .Configure<Microsoft.Extensions.Options.IOptions<JwtSettings>>((bearerOpts, jwtOpts) =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        var s = jwtOpts.Value;
+        bearerOpts.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidateAudience = true,
-            ValidAudience = jwtSettings.Audience,
-            ValidateLifetime = true,
+            ValidateIssuer           = true,
+            ValidIssuer              = s.Issuer,
+            ValidateAudience         = true,
+            ValidAudience            = s.Audience,
+            ValidateLifetime         = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings.Key)),
-            ClockSkew = TimeSpan.FromSeconds(30)
+            IssuerSigningKey         = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(s.Key)),
+            ClockSkew                = TimeSpan.FromSeconds(30)
         };
     });
 
@@ -138,3 +146,6 @@ app.UseAuthorization();  // ← DESPUÉS autorización (sin duplicado)
 app.MapControllers();
 
 app.Run();
+
+// Exposes Program to WebApplicationFactory<Program> in test projects
+public partial class Program { }
