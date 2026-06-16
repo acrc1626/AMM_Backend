@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Setup .NET 9 ──────────────────────────────────────────────────────
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # ── 3. Restore ───────────────────────────────────────────────────────────
+      - name: Restore dependencies
+        run: dotnet restore AMM_Backend.sln
+
+      # ── 4. Build (Release) ───────────────────────────────────────────────────
+      - name: Build
+        run: dotnet build AMM_Backend.sln --configuration Release --no-restore
+
+      # ── 5. Unit Tests (206) ──────────────────────────────────────────────────
+      - name: Test — Unit
+        run: >
+          dotnet test AMM.Tests.Unit
+          --configuration Release
+          --no-build
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults/unit
+          --logger "console;verbosity=minimal"
+          --
+          DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Exclude="[AMM.Infrastructure]*"
+
+      # ── 6. Integration Tests (91) ─────────────────────────────────────────────
+      # La CustomWebApplicationFactory reemplaza SQL Server por EF InMemory
+      # e inyecta su propia Jwt:Key, pero las variables de entorno actúan como
+      # capa de seguridad por si el host arranca antes del override de la factory.
+      - name: Test — Integration
+        run: >
+          dotnet test AMM.Tests.Integration
+          --configuration Release
+          --no-build
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults/integration
+          --logger "console;verbosity=minimal"
+          --
+          DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Exclude="[AMM.Infrastructure]*"
+        env:
+          Jwt__Key: "clave-secreta-de-ci-para-tests-de-al-menos-32-chars!"
+          Jwt__Issuer: "amm-ci"
+          Jwt__Audience: "amm-ci-client"
+          Jwt__ExpirationMinutes: "60"
+          ConnectionStrings__DefaultConnection: "DataSource=:memory:"
+
+      # ── 7. Instalar ReportGenerator ───────────────────────────────────────────
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      # ── 8. Combinar ambos XMLs y generar reporte ──────────────────────────────
+      - name: Generate Coverage Report
+        run: >
+          reportgenerator
+          "-reports:./TestResults/**/coverage.cobertura.xml"
+          "-targetdir:./coverage-report"
+          "-reporttypes:Html;TextSummary;Cobertura"
+
+      # ── 9. Verificar umbral mínimo 80% ────────────────────────────────────────
+      - name: Check Coverage Threshold (≥ 80%)
+        run: |
+          COVERAGE=$(grep "Line coverage" ./coverage-report/Summary.txt \
+            | grep -oP '\d+\.\d+')
+          echo "Global line coverage: ${COVERAGE}%"
+          if awk -v cov="$COVERAGE" 'BEGIN { exit (cov + 0 >= 80) ? 0 : 1 }'; then
+            echo "::notice::✅ Coverage ${COVERAGE}% meets the ≥ 80% threshold"
+          else
+            echo "::error::❌ Coverage ${COVERAGE}% is below the 80% minimum threshold"
+            exit 1
+          fi
+
+      # ── 10. Upload artefacto ──────────────────────────────────────────────────
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: src/coverage-report/
+          retention-days: 30
