@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AMM.Application.DTOs.Auth;
 using AMM.Application.UseCases.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +12,16 @@ namespace AMM.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly LoginUseCase _loginUseCase;
+    private readonly SetPasswordUseCase _setPasswordUseCase;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(LoginUseCase loginUseCase, ILogger<AuthController> logger)
+    public AuthController(
+        LoginUseCase loginUseCase,
+        SetPasswordUseCase setPasswordUseCase,
+        ILogger<AuthController> logger)
     {
         _loginUseCase = loginUseCase;
+        _setPasswordUseCase = setPasswordUseCase;
         _logger = logger;
     }
 
@@ -43,6 +49,74 @@ public class AuthController : ControllerBase
                 Detail = ex.Message,
                 Status = StatusCodes.Status401Unauthorized
             });
+        }
+    }
+
+    /// <summary>Devuelve la información del usuario autenticado actualmente.</summary>
+    [HttpGet("me")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Me()
+    {
+        var claims = User.Claims.Select(c => new { c.Type, c.Value });
+        return Ok(new
+        {
+            Sub   = User.FindFirstValue(ClaimTypes.NameIdentifier),
+            Email = User.FindFirstValue(ClaimTypes.Email),
+            Name  = User.FindFirstValue(ClaimTypes.Name),
+            Roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value)
+        });
+    }
+
+    /// <summary>Cambia la contraseña del usuario autenticado.</summary>
+    [HttpPut("change-password")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> ChangePassword(
+        [FromBody] ChangePasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? throw new InvalidOperationException("Claim sub no encontrado."));
+
+        try
+        {
+            await _setPasswordUseCase.ChangeAsync(usuarioId, request, cancellationToken);
+            return NoContent();
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ProblemDetails
+            {
+                Title  = "Contraseña incorrecta",
+                Detail = ex.Message,
+                Status = StatusCodes.Status401Unauthorized
+            });
+        }
+    }
+
+    /// <summary>Asigna contraseña inicial a un usuario (solo administradores).</summary>
+    [HttpPost("set-password")]
+    [Authorize(Roles = "Administrador")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> SetPassword(
+        [FromBody] SetPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        var operador = User.FindFirstValue(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Email)
+            ?? User.FindFirstValue(ClaimTypes.Email)
+            ?? "system";
+
+        try
+        {
+            await _setPasswordUseCase.ExecuteAsync(request, operador, cancellationToken);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
         }
     }
 }
