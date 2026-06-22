@@ -147,27 +147,26 @@ export default function (data) {
 
   // ── 2. Creación de censo ───────────────────────────────────────────────────
   group('censos-post', () => {
-    // Arrange
+    // Arrange — CrearCensoRequest (tipoEntornoId=1 Educativo, no requiere JefeHogar)
     const body = JSON.stringify({
-      tipoEntornoId: 1,
-      pacienteId:    1,
-      ubicacionId:   null,
+      tipoEntornoId:  1,
+      ubicacionId:    null,
       departamentoId: null,
-      municipioId:   null,
-      fecha:         '2026-06-17T00:00:00.000Z',
-      observacion:   `Censo k6 VU-${__VU}-I-${__ITER}`,
-      estadoId:      1,
+      municipioId:    null,
+      fecha:          '2026-06-17T00:00:00.000Z',
+      observacion:    `Censo k6 VU-${__VU}-I-${__ITER}`,
+      estadoId:       1,
     });
 
     // Act
     const res = http.post(`${BASE_URL}/api/Censos`, body, ap);
     latenciaCensoPost.add(res.timings.duration);
 
-    // Assert
+    // Assert — respuesta es CensoResumenDto: { id, tipoEntornoId, tipoEntorno, fecha, estadoId, estado, cantidadPersonas }
     const ok = check(res, {
-      '[censos/post] 201':        (r) => r.status === 201,
-      '[censos/post] id asignado': (r) => r.json('id') > 0,
-      '[censos/post] paciente ok': (r) => r.json('pacienteId') === 1,
+      '[censos/post] 201':         (r) => r.status === 201,
+      '[censos/post] id asignado': (r) => (r.json('id') ?? 0) > 0,
+      '[censos/post] estadoId ok': (r) => (r.json('estadoId') ?? 0) > 0,
     });
 
     if (ok) censosCreados.add(1);
