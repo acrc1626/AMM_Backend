@@ -9,8 +9,8 @@ public record EstadoUsuarioDto(byte Id, string Nombre, string? Descripcion);
 public record CrearEstadoUsuarioRequest(string Nombre, string? Descripcion);
 
 // TipoDocumento
-public record TipoDocumentoDto(byte Id, string Descripcion);
-public record CrearTipoDocumentoRequest(string Descripcion);
+public record TipoDocumentoDto(byte Id, string Tipo, string Descripcion);
+public record CrearTipoDocumentoRequest(string Tipo, string Descripcion);
 
 // Sexo
 public record SexoDto(byte Id, string Descripcion);

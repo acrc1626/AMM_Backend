@@ -10,45 +10,67 @@ public class AmmDbContext : DbContext
     {
     }
 
-    public DbSet<Area> Areas => Set<Area>();
-    public DbSet<Censo> Censos => Set<Censo>();
-    public DbSet<CensoNovedad> CensoNovedades => Set<CensoNovedad>();
-    public DbSet<Departamento> Departamentos => Set<Departamento>();
+    // Catálogos
     public DbSet<Estado> Estados => Set<Estado>();
     public DbSet<EstadoUsuario> EstadoUsuarios => Set<EstadoUsuario>();
+    public DbSet<EstadoPersona> EstadoPersonas => Set<EstadoPersona>();
     public DbSet<Etnia> Etnias => Set<Etnia>();
-    public DbSet<Evento> Eventos => Set<Evento>();
-    public DbSet<Escabiosis> Escabiosis => Set<Escabiosis>();
-    public DbSet<Geohelmintiasis> Geohelmintiasis => Set<Geohelmintiasis>();
-    public DbSet<Pediculosis> Pediculosis => Set<Pediculosis>();
-    public DbSet<Malaria> Malaria => Set<Malaria>();
-    public DbSet<Tuberculosis> Tuberculosis => Set<Tuberculosis>();
-    public DbSet<TuberculosisContacto> TuberculosisContacto => Set<TuberculosisContacto>();
-    public DbSet<LeshmaniasisCutanea> LeshmaniasisCutanea => Set<LeshmaniasisCutanea>();
+    public DbSet<EtniaPuebloIndigena> EtniaPueblosIndigenas => Set<EtniaPuebloIndigena>();
+    public DbSet<Enfermedad> Enfermedades => Set<Enfermedad>();
     public DbSet<EventoTipo> EventoTipos => Set<EventoTipo>();
     public DbSet<FormaFarmaceutica> FormasFarmaceuticas => Set<FormaFarmaceutica>();
-    public DbSet<Medicamento> Medicamentos => Set<Medicamento>();
-    public DbSet<Menu> Menus => Set<Menu>();
-    public DbSet<Microterritorio> Microterritorios => Set<Microterritorio>();
     public DbSet<MotivoNoTratamiento> MotivosNoTratamiento => Set<MotivoNoTratamiento>();
-    public DbSet<Municipio> Municipios => Set<Municipio>();
-    public DbSet<Paciente> Pacientes => Set<Paciente>();
     public DbSet<Parentesco> Parentescos => Set<Parentesco>();
-    public DbSet<Permiso> Permisos => Set<Permiso>();
     public DbSet<PresenciaNovedad> PresenciaNovedades => Set<PresenciaNovedad>();
-    public DbSet<Prm> Prms => Set<Prm>();
     public DbSet<PuebloIndigena> PueblosIndigenas => Set<PuebloIndigena>();
-    public DbSet<Rafa> Rafas => Set<Rafa>();
-    public DbSet<Rol> Roles => Set<Rol>();
     public DbSet<Sexo> Sexos => Set<Sexo>();
-    public DbSet<Territorio> Territorios => Set<Territorio>();
     public DbSet<TipoDocumento> TipoDocumentos => Set<TipoDocumento>();
     public DbSet<TipoEntorno> TipoEntornos => Set<TipoEntorno>();
     public DbSet<TipoNovedad> TipoNovedades => Set<TipoNovedad>();
     public DbSet<TipoSupervision> TipoSupervisiones => Set<TipoSupervision>();
+
+    // Geografía
+    public DbSet<Area> Areas => Set<Area>();
+    public DbSet<Departamento> Departamentos => Set<Departamento>();
+    public DbSet<Microterritorio> Microterritorios => Set<Microterritorio>();
+    public DbSet<Municipio> Municipios => Set<Municipio>();
+    public DbSet<Territorio> Territorios => Set<Territorio>();
+    public DbSet<Ubicacion> Ubicaciones => Set<Ubicacion>();
+
+    // Pacientes
+    public DbSet<Paciente> Pacientes => Set<Paciente>();
+
+    // Censos
+    public DbSet<Censo> Censos => Set<Censo>();
+    public DbSet<CensoNovedad> CensoNovedades => Set<CensoNovedad>();
+    public DbSet<CensoPersona> CensoPersonas => Set<CensoPersona>();
+    public DbSet<PersonaEnfermedad> PersonaEnfermedades => Set<PersonaEnfermedad>();
+
+    // Eventos
+    public DbSet<Evento> Eventos => Set<Evento>();
+    public DbSet<EventoEscabiosis> EventoEscabiosis => Set<EventoEscabiosis>();
+    public DbSet<EventoGeohelmintiasis> EventoGeohelmintiasis => Set<EventoGeohelmintiasis>();
+    public DbSet<EventoPediculosis> EventoPediculosis => Set<EventoPediculosis>();
+    public DbSet<EventoPian> EventoPian => Set<EventoPian>();
+    public DbSet<EventoTeniasisCisticercosis> EventoTeniasisCisticercosis => Set<EventoTeniasisCisticercosis>();
+    public DbSet<EventoTracoma> EventoTracoma => Set<EventoTracoma>();
+    public DbSet<EventoTungiasis> EventoTungiasis => Set<EventoTungiasis>();
+    public DbSet<EventoMalaria> EventoMalaria => Set<EventoMalaria>();
+    public DbSet<EventoTuberculosis> EventoTuberculosis => Set<EventoTuberculosis>();
+    public DbSet<EventoTuberculosisContacto> EventoTuberculosisContacto => Set<EventoTuberculosisContacto>();
+    public DbSet<EventoLeshmaniasisCutanea> EventoLeshmaniasisCutanea => Set<EventoLeshmaniasisCutanea>();
+
+    // Tratamientos
+    public DbSet<Medicamento> Medicamentos => Set<Medicamento>();
+    public DbSet<Prm> Prms => Set<Prm>();
+    public DbSet<Rafa> Rafas => Set<Rafa>();
     public DbSet<Tratamiento> Tratamientos => Set<Tratamiento>();
     public DbSet<TratamientoDetalle> TratamientoDetalles => Set<TratamientoDetalle>();
-    public DbSet<Ubicacion> Ubicaciones => Set<Ubicacion>();
+
+    // Seguridad
+    public DbSet<Menu> Menus => Set<Menu>();
+    public DbSet<Permiso> Permisos => Set<Permiso>();
+    public DbSet<Rol> Roles => Set<Rol>();
     public DbSet<Usuario> Usuarios => Set<Usuario>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

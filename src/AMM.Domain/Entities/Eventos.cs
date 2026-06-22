@@ -1,4 +1,3 @@
-using System;
 using AMM.Domain.Common;
 
 namespace AMM.Domain.Entities;
@@ -16,55 +15,103 @@ public class Evento : AuditableEntity
     public long PacienteId { get; set; }
     public byte EventoTipoId { get; set; }
     public DateTime Fecha { get; set; }
-    public string? Observacion { get; set; }
 
     public virtual Paciente Paciente { get; set; } = null!;
     public virtual EventoTipo EventoTipo { get; set; } = null!;
     public virtual Estado Estado { get; set; } = null!;
 }
 
-public class Escabiosis : Evento
+public class EventoEscabiosis
 {
-    public bool? Tratado { get; set; }
-    public bool? CierreControl { get; set; }
+    public long EventoId { get; set; }
+    public byte? Severidad { get; set; }
+    public string? Localizacion { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
 }
 
-public class Geohelmintiasis : Evento
+public class EventoGeohelmintiasis
 {
-    public bool? Tratado { get; set; }
-    public bool? CierreControl { get; set; }
-    public bool? Laboratorio { get; set; }
-}
-
-public class Pediculosis : Evento
-{
-    public bool? Tratado { get; set; }
-    public bool? CierreControl { get; set; }
-}
-
-public class Malaria : Evento
-{
-    public bool? Gota { get; set; }
+    public long EventoId { get; set; }
+    public string? TipoPrueba { get; set; }
     public string? Resultado { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
 }
 
-public class Tuberculosis : Evento
+public class EventoPediculosis
 {
-    public bool? Sintomatico { get; set; }
-    public string? Resultado { get; set; }
+    public long EventoId { get; set; }
+    public byte? Grado { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
 }
 
-public class TuberculosisContacto : Evento
+public class EventoPian
 {
-    public long? IndexId { get; set; }
-    public byte? ParentescoId { get; set; }
+    public long EventoId { get; set; }
+    public string? Estadio { get; set; }
 
-    public virtual Paciente? Index { get; set; }
-    public virtual Parentesco? Parentesco { get; set; }
+    public virtual Evento Evento { get; set; } = null!;
 }
 
-public class LeshmaniasisCutanea : Evento
+public class EventoTeniasisCisticercosis
 {
-    public bool? Cicatriz { get; set; }
+    public long EventoId { get; set; }
+    public bool? Teniasis { get; set; }
+    public bool? Cisticercosis { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
+}
+
+public class EventoTracoma
+{
+    public long EventoId { get; set; }
+    public int? CriterioExclusionId { get; set; }
+    public bool? ExaminadoTt { get; set; }
+    public byte? Triquiasis { get; set; }
+    public string? OpacidadCorneal { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
+}
+
+public class EventoTungiasis
+{
+    public long EventoId { get; set; }
     public int? NumeroLesiones { get; set; }
+    public string? Complicaciones { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
+}
+
+public class EventoMalaria
+{
+    public long EventoId { get; set; }
+    public string? Especie { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
+}
+
+public class EventoTuberculosis
+{
+    public long EventoId { get; set; }
+    public string? TipoTuberculosis { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
+}
+
+public class EventoTuberculosisContacto
+{
+    public long EventoId { get; set; }
+    public string? Observacion { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
+}
+
+public class EventoLeshmaniasisCutanea
+{
+    public long EventoId { get; set; }
+    public string? TipoLesion { get; set; }
+
+    public virtual Evento Evento { get; set; } = null!;
 }

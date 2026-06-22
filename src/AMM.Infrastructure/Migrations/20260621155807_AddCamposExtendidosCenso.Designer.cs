@@ -4,6 +4,7 @@ using AMM.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMM.Infrastructure.Migrations
 {
     [DbContext(typeof(AmmDbContext))]
-    partial class AmmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621155807_AddCamposExtendidosCenso")]
+    partial class AddCamposExtendidosCenso
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,11 +82,6 @@ namespace AMM.Infrastructure.Migrations
                         .HasColumnType("smallint")
                         .HasColumnName("departamento_id");
 
-                    b.Property<string>("Direccion")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasColumnName("direccion");
-
                     b.Property<byte>("EstadoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint")
@@ -119,12 +117,6 @@ namespace AMM.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnName("municipio_id");
 
-                    b.Property<string>("ObjetoInterventor")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("objeto_interventor");
-
                     b.Property<string>("Observacion")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
@@ -140,20 +132,26 @@ namespace AMM.Infrastructure.Migrations
                         .HasColumnType("tinyint")
                         .HasColumnName("tipo_entorno_id");
 
-                    b.Property<int?>("TotalMiembros")
-                        .HasColumnType("int")
+                    b.Property<string>("TotalMiembros")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("total_miembros");
 
                     b.Property<long?>("UbicacionId")
                         .HasColumnType("bigint")
                         .HasColumnName("ubicacion_id");
 
-                    b.Property<int?>("VisitantesTemporalesCol")
-                        .HasColumnType("int")
+                    b.Property<string>("VisitantesTemporalesCol")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("visitantes_temporales_col");
 
-                    b.Property<int?>("VisitantesTemporalesMig")
-                        .HasColumnType("int")
+                    b.Property<string>("VisitantesTemporalesMig")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("visitantes_temporales_mig");
 
                     b.HasKey("Id");

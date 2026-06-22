@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AMM.Infrastructure.Persistence.Configurations;
 
-public class CatalogConfiguration : 
+public class CatalogConfiguration :
     IEntityTypeConfiguration<Estado>,
     IEntityTypeConfiguration<EstadoUsuario>,
     IEntityTypeConfiguration<TipoDocumento>,
     IEntityTypeConfiguration<Sexo>,
     IEntityTypeConfiguration<Etnia>,
     IEntityTypeConfiguration<PuebloIndigena>,
+    IEntityTypeConfiguration<EtniaPuebloIndigena>,
     IEntityTypeConfiguration<TipoEntorno>,
     IEntityTypeConfiguration<TipoNovedad>,
     IEntityTypeConfiguration<PresenciaNovedad>,
@@ -18,7 +19,9 @@ public class CatalogConfiguration :
     IEntityTypeConfiguration<MotivoNoTratamiento>,
     IEntityTypeConfiguration<Parentesco>,
     IEntityTypeConfiguration<EventoTipo>,
-    IEntityTypeConfiguration<FormaFarmaceutica>
+    IEntityTypeConfiguration<FormaFarmaceutica>,
+    IEntityTypeConfiguration<EstadoPersona>,
+    IEntityTypeConfiguration<Enfermedad>
 {
     public void Configure(EntityTypeBuilder<Estado> builder)
     {
@@ -40,7 +43,8 @@ public class CatalogConfiguration :
     {
         builder.ToTable("TIPO_DOCUMENTO");
         builder.Property(e => e.Id).HasColumnName("id");
-        builder.Property(e => e.Descripcion).HasColumnName("descripcion").HasMaxLength(50).IsUnicode(false);
+        builder.Property(e => e.Tipo).HasColumnName("tipo").HasMaxLength(10).IsUnicode(false);
+        builder.Property(e => e.Descripcion).HasColumnName("descripcion").HasMaxLength(60).IsUnicode(false);
     }
 
     public void Configure(EntityTypeBuilder<Sexo> builder)
@@ -56,6 +60,13 @@ public class CatalogConfiguration :
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.Descripcion).HasColumnName("descripcion").HasMaxLength(60).IsUnicode(false);
         builder.Property(e => e.Codigo).HasColumnName("codigo").HasMaxLength(5).IsUnicode(false).HasDefaultValue("");
+
+        builder.HasMany(e => e.PueblosIndigenas)
+               .WithMany(p => p.Etnias)
+               .UsingEntity<EtniaPuebloIndigena>(
+                   j => j.HasOne(x => x.PuebloIndigena).WithMany().HasForeignKey(x => x.PuebloIndigenaId).OnDelete(DeleteBehavior.ClientSetNull),
+                   j => j.HasOne(x => x.Etnia).WithMany().HasForeignKey(x => x.EtniaId).OnDelete(DeleteBehavior.ClientSetNull)
+               );
     }
 
     public void Configure(EntityTypeBuilder<PuebloIndigena> builder)
@@ -63,6 +74,14 @@ public class CatalogConfiguration :
         builder.ToTable("PUEBLO_INDIGENA");
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.Descripcion).HasColumnName("descripcion").HasMaxLength(100).IsUnicode(false);
+    }
+
+    public void Configure(EntityTypeBuilder<EtniaPuebloIndigena> builder)
+    {
+        builder.ToTable("ETNIA_PUEBLO_INDIGENA");
+        builder.HasKey(e => new { e.EtniaId, e.PuebloIndigenaId });
+        builder.Property(e => e.EtniaId).HasColumnName("etnia_id");
+        builder.Property(e => e.PuebloIndigenaId).HasColumnName("pueblo_indigena_id");
     }
 
     public void Configure(EntityTypeBuilder<TipoEntorno> builder)
@@ -120,5 +139,21 @@ public class CatalogConfiguration :
         builder.ToTable("FORMA_FARMACEUTICA");
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.Nombre).HasColumnName("nombre").HasMaxLength(80).IsUnicode(false);
+    }
+
+    public void Configure(EntityTypeBuilder<EstadoPersona> builder)
+    {
+        builder.ToTable("ESTADO_PERSONA");
+        builder.Property(e => e.Id).HasColumnName("id");
+        builder.Property(e => e.Nombre).HasColumnName("nombre").HasMaxLength(40).IsUnicode(false);
+        builder.Property(e => e.Descripcion).HasColumnName("descripcion").HasMaxLength(200);
+    }
+
+    public void Configure(EntityTypeBuilder<Enfermedad> builder)
+    {
+        builder.ToTable("ENFERMEDAD");
+        builder.Property(e => e.Id).HasColumnName("id");
+        builder.Property(e => e.Codigo).HasColumnName("codigo").HasMaxLength(30).IsUnicode(false);
+        builder.Property(e => e.Nombre).HasColumnName("nombre").HasMaxLength(100).IsUnicode(false);
     }
 }

@@ -209,6 +209,35 @@ public class EventoTiposController : CatalogControllerBase<EventoTipoDto, byte>
 }
 
 /// <summary>
+/// Parentesco catalog endpoint
+/// </summary>
+[ApiController]
+[Route("api/[controller]")]
+public class ParentescoController : CatalogControllerBase<ParentescoDto, byte>
+{
+    private readonly ParentescoUseCase _useCase;
+
+    public ParentescoController(ParentescoUseCase useCase, ILogger<ParentescoController> logger) : base(logger)
+    {
+        _useCase = useCase;
+    }
+
+    [HttpGet]
+    public override async Task<ActionResult<IReadOnlyList<ParentescoDto>>> GetAll(CancellationToken cancellationToken)
+    {
+        var result = await _useCase.GetAllParentescosAsync(cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public override async Task<ActionResult<ParentescoDto>> GetById(byte id, CancellationToken cancellationToken)
+    {
+        var result = await _useCase.GetParentescoByIdAsync(id, cancellationToken);
+        return HandleResult(result);
+    }
+}
+
+/// <summary>
 /// Formas Farmacéuticas catalog endpoint
 /// </summary>
 [ApiController]

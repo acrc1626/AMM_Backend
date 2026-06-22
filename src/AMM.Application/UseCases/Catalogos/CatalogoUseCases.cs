@@ -28,10 +28,10 @@ public class TipoDocumentoUseCase : CatalogoUseCase<TipoDocumento, TipoDocumento
     public TipoDocumentoUseCase(ITipoDocumentoRepository repository) : base(repository) { }
 
     public Task<IReadOnlyList<TipoDocumentoDto>> GetAllTiposDocumentoAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new TipoDocumentoDto(e.Id, e.Descripcion), ct);
+        GetAllAsync(e => new TipoDocumentoDto(e.Id, e.Tipo, e.Descripcion), ct);
 
     public Task<TipoDocumentoDto?> GetTipoDocumentoByIdAsync(byte id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new TipoDocumentoDto(e.Id, e.Descripcion), ct);
+        GetByIdAsync(id, e => new TipoDocumentoDto(e.Id, e.Tipo, e.Descripcion), ct);
 }
 
 // Sexo Use Cases
@@ -92,6 +92,18 @@ public class EventoTipoUseCase : CatalogoUseCase<EventoTipo, EventoTipoDto, Crea
 
     public Task<EventoTipoDto?> GetEventoTipoByIdAsync(byte id, CancellationToken ct = default) =>
         GetByIdAsync(id, e => new EventoTipoDto(e.Id, e.Codigo, e.Nombre), ct);
+}
+
+// Parentesco Use Cases
+public class ParentescoUseCase : CatalogoUseCase<Parentesco, ParentescoDto, CrearParentescoRequest, byte>
+{
+    public ParentescoUseCase(IParentescoRepository repository) : base(repository) { }
+
+    public Task<IReadOnlyList<ParentescoDto>> GetAllParentescosAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new ParentescoDto(e.Id, e.Descripcion), ct);
+
+    public Task<ParentescoDto?> GetParentescoByIdAsync(byte id, CancellationToken ct = default) =>
+        GetByIdAsync(id, e => new ParentescoDto(e.Id, e.Descripcion), ct);
 }
 
 // FormaFarmaceutica Use Cases

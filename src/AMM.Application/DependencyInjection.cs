@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<UseCases.Catalogos.TipoEntornoUseCase>();
         services.AddScoped<UseCases.Catalogos.EventoTipoUseCase>();
         services.AddScoped<UseCases.Catalogos.FormaFarmaceuticaUseCase>();
+        services.AddScoped<UseCases.Catalogos.ParentescoUseCase>();
 
         // Geographic use cases
         services.AddScoped<UseCases.UbicacionGeografica.DepartamentoUseCase>();
@@ -44,15 +45,22 @@ public static class DependencyInjection
         // Censo use cases
         services.AddScoped<UseCases.Censos.CensoUseCase>();
         services.AddScoped<UseCases.Censos.CensoNovedadUseCase>();
+        services.AddScoped<UseCases.Censos.CrearCensoUseCase>();
+        services.AddScoped<UseCases.Censos.ConsultarCensoUseCase>();
 
         // Eventos use cases
-        services.AddScoped<UseCases.Eventos.EscabiosisUseCase>();
-        services.AddScoped<UseCases.Eventos.GeohelmintiasisUseCase>();
-        services.AddScoped<UseCases.Eventos.PediculosisUseCase>();
-        services.AddScoped<UseCases.Eventos.MalariaUseCase>();
-        services.AddScoped<UseCases.Eventos.TuberculosisUseCase>();
-        services.AddScoped<UseCases.Eventos.TuberculosisContactoUseCase>();
-        services.AddScoped<UseCases.Eventos.LeshmaniasisCutaneaUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoEscabiosisUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoGeohelmintiasisUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoPediculosisUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoPianUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoTeniasisCisticercosisUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoTracomaUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoTungiasisUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoMalariaUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoTuberculosisUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoTuberculosisContactoUseCase>();
+        services.AddScoped<UseCases.Eventos.EventoLeshmaniasisCutaneaUseCase>();
 
         return services;
     }
