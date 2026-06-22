@@ -196,6 +196,98 @@ public class EventosControllerTests : IClassFixture<CustomWebApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
+    // ── Pian ──────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Pian_SinToken_Returns401() =>
+        (await NewClient().GetAsync("/api/pian"))
+            .StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+    [Fact]
+    public async Task Pian_GetAll_ConToken_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/pian");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Pian_GetById_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/pian/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    // ── TeniasisCisticercosis ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task TeniasisCisticercosis_SinToken_Returns401() =>
+        (await NewClient().GetAsync("/api/teniasiscisticercosis"))
+            .StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+    [Fact]
+    public async Task TeniasisCisticercosis_GetAll_ConToken_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/teniasiscisticercosis");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task TeniasisCisticercosis_GetById_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/teniasiscisticercosis/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    // ── Tracoma ───────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Tracoma_SinToken_Returns401() =>
+        (await NewClient().GetAsync("/api/tracoma"))
+            .StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+    [Fact]
+    public async Task Tracoma_GetAll_ConToken_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/tracoma");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Tracoma_GetById_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/tracoma/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    // ── Tungiasis ─────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Tungiasis_SinToken_Returns401() =>
+        (await NewClient().GetAsync("/api/tungiasis"))
+            .StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+    [Fact]
+    public async Task Tungiasis_GetAll_ConToken_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/tungiasis");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Tungiasis_GetById_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/tungiasis/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
     // ── CensoNovedades ────────────────────────────────────────────────────────
 
     [Fact]
@@ -236,4 +328,5 @@ public class EventosControllerTests : IClassFixture<CustomWebApplicationFactory>
             $"/api/censonovedades/paciente/{CustomWebApplicationFactory.SeedPacienteId}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
+
 }

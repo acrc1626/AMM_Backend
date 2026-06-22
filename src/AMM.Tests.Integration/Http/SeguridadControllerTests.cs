@@ -49,13 +49,8 @@ public class SeguridadControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task Usuarios_GetAll_WithToken_Returns200()
     {
-        // Given
         var client = await ClienteAutenticadoAsync();
-
-        // When
         var response = await client.GetAsync("/api/usuarios");
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var list = await response.Content.ReadFromJsonAsync<IReadOnlyList<UsuarioDto>>(JsonOpts);
         list.Should().NotBeNull().And.NotBeEmpty("el usuario sembrado debe aparecer en la lista");
@@ -64,13 +59,8 @@ public class SeguridadControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task Usuarios_GetById_ExistingId_Returns200()
     {
-        // Given
         var client = await ClienteAutenticadoAsync();
-
-        // When
         var response = await client.GetAsync("/api/usuarios/1");
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var dto = await response.Content.ReadFromJsonAsync<UsuarioDto>(JsonOpts);
         dto.Should().NotBeNull();
@@ -81,7 +71,6 @@ public class SeguridadControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task Usuarios_Create_Returns201Created()
     {
-        // Given
         var client = await ClienteAutenticadoAsync();
         var request = new
         {
@@ -90,11 +79,7 @@ public class SeguridadControllerTests : IClassFixture<CustomWebApplicationFactor
             EstadoUsuarioId = (byte)1,
             AzureAdObjectId = (Guid?)null
         };
-
-        // When
         var response = await client.PostAsync("/api/usuarios", JsonBody(request));
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var dto = await response.Content.ReadFromJsonAsync<UsuarioDto>(JsonOpts);
         dto.Should().NotBeNull();
@@ -106,15 +91,73 @@ public class SeguridadControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task Usuarios_Delete_SoftDelete_Returns204()
     {
-        // Given — usuario sembrado con Id=SeedDeleteUserId, distinto del usuario de login
         var client = await ClienteAutenticadoAsync();
-
-        // When
         var response = await client.DeleteAsync(
             $"/api/usuarios/{CustomWebApplicationFactory.SeedDeleteUserId}");
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Usuarios_GetAllPaged_WithToken_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/usuarios/paged?page=1&pageSize=10");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Usuarios_GetByCorreo_Existente_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var correo = Uri.EscapeDataString(CustomWebApplicationFactory.TestUserEmail);
+        var response = await client.GetAsync($"/api/usuarios/correo/{correo}");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Usuarios_GetByCorreo_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/usuarios/correo/noexiste@test.com");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Usuarios_Update_Returns204()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var request = new
+        {
+            Id              = 1,
+            Correo          = CustomWebApplicationFactory.TestUserEmail,
+            NombreCompleto  = "Usuario Actualizado",
+            EstadoUsuarioId = (byte)1
+        };
+        var response = await client.PutAsync("/api/usuarios/1", JsonBody(request));
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Usuarios_Update_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var request = new
+        {
+            Id              = 99999,
+            Correo          = "noexiste@test.com",
+            NombreCompleto  = "No Existe",
+            EstadoUsuarioId = (byte)1
+        };
+        var response = await client.PutAsync("/api/usuarios/99999", JsonBody(request));
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Usuarios_Delete_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.DeleteAsync("/api/usuarios/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     // ── MenusController ───────────────────────────────────────────────────────
@@ -122,27 +165,25 @@ public class SeguridadControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task Menus_GetAll_WithToken_Returns200()
     {
-        // Given
         var client = await ClienteAutenticadoAsync();
-
-        // When
         var response = await client.GetAsync("/api/menus");
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
     public async Task Menus_GetByRol_WithToken_Returns200()
     {
-        // Given — Rol con Id=1 está sembrado; puede no tener menús pero devuelve 200 + []
         var client = await ClienteAutenticadoAsync();
-
-        // When
         var response = await client.GetAsync("/api/menus/rol/1");
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Menus_GetById_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/menus/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     // ── PermisosController ────────────────────────────────────────────────────
@@ -150,13 +191,16 @@ public class SeguridadControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task Permisos_GetAll_WithToken_Returns200()
     {
-        // Given
         var client = await ClienteAutenticadoAsync();
-
-        // When
         var response = await client.GetAsync("/api/permisos");
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Permisos_GetById_NoExiste_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/permisos/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

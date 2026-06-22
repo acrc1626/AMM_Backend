@@ -102,7 +102,11 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         if (ctx.Roles.Any()) return; // idempotente
 
         // ── Catálogos mínimos requeridos por Include en los repositorios ──────────
-        ctx.Estados.Add(new Estado          { Id = EstadoId.Activo, Nombre = "Activo",    Descripcion = "Activo" });
+        ctx.Estados.Add(new Estado { Id = EstadoId.Activo,     Nombre = "Activo",     Descripcion = "Activo" });
+        ctx.Estados.Add(new Estado { Id = EstadoId.Inactivo,   Nombre = "Inactivo",   Descripcion = "Inactivo" });
+        ctx.Estados.Add(new Estado { Id = EstadoId.Borrador,   Nombre = "Borrador",   Descripcion = "Borrador" });
+        ctx.Estados.Add(new Estado { Id = EstadoId.EnProceso,  Nombre = "En Proceso", Descripcion = "En Proceso" });
+        ctx.Estados.Add(new Estado { Id = EstadoId.Finalizado, Nombre = "Finalizado", Descripcion = "Finalizado" });
         ctx.TipoDocumentos.Add(new TipoDocumento { Id = 1, Tipo = "CC", Descripcion = "Cédula de Ciudadanía" });
         ctx.Sexos.Add(new Sexo              { Id = 1,               Descripcion = "Masculino" });
         ctx.TipoEntornos.Add(new TipoEntorno{ Id = 1,               Descripcion = "Educativo" });
@@ -115,6 +119,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         ctx.PueblosIndigenas.Add(new PuebloIndigena { Id = 1, Descripcion = "Pueblo de prueba" });
         ctx.EventoTipos.Add(new EventoTipo         { Id = 1,  Codigo = "EVT01", Nombre = "Evento tipo prueba" });
         ctx.FormasFarmaceuticas.Add(new FormaFarmaceutica { Id = 1, Nombre = "Tableta" });
+        ctx.Parentescos.Add(new Parentesco         { Id = 1, Descripcion = "Jefe de Hogar" });
 
         // ── Geografía en cadena para pruebas GetById ──────────────────────────────
         ctx.Departamentos.Add(new Departamento    { Id = 1, CodigoDane = "05",    Nombre = "Antioquia" });

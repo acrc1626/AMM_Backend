@@ -113,6 +113,16 @@ public class CatalogsControllerTests : IClassFixture<CustomWebApplicationFactory
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
+    // ── Parentesco ────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Parentesco_GetAll_WithToken_ReturnsOk()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/parentesco");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
     // ── GetById: registro existente (Id=1 sembrado) → 200 ────────────────────
     // byte: 1 → no excede 255; short: 1 válido en todos los controllers.
 
@@ -124,6 +134,7 @@ public class CatalogsControllerTests : IClassFixture<CustomWebApplicationFactory
     [InlineData("/api/tiposentorno/1")]
     [InlineData("/api/eventotipos/1")]
     [InlineData("/api/formasfarmaceuticas/1")]
+    [InlineData("/api/parentesco/1")]
     public async Task GetById_ExistingId_ReturnsOk(string url)
     {
         // Given
@@ -148,6 +159,7 @@ public class CatalogsControllerTests : IClassFixture<CustomWebApplicationFactory
     [InlineData("/api/tiposentorno/99")]
     [InlineData("/api/eventotipos/99")]
     [InlineData("/api/formasfarmaceuticas/9999")]
+    [InlineData("/api/parentesco/99")]
     public async Task GetById_NonExistentId_ReturnsNotFound(string url)
     {
         // Given
