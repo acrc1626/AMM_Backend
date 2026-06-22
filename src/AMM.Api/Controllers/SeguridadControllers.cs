@@ -65,13 +65,10 @@ public class UsuariosController : CatalogControllerBase<UsuarioDto, int>
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int id, UpdateUsuarioRequest request, CancellationToken cancellationToken)
     {
-        if (id != request.Id) 
-            return BadRequest("ID mismatch");
-        
         try
         {
             var usuario = UsuarioActual;
-            await _useCase.UpdateAsync(request, usuario, cancellationToken);
+            await _useCase.UpdateAsync(request with { Id = id }, usuario, cancellationToken);
             return NoContent();
         }
         catch (KeyNotFoundException)

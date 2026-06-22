@@ -4,6 +4,7 @@ using AMM.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMM.Infrastructure.Migrations
 {
     [DbContext(typeof(AmmDbContext))]
-    partial class AmmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621160549_AlterConteosCensoToInt")]
+    partial class AlterConteosCensoToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,11 +82,6 @@ namespace AMM.Infrastructure.Migrations
                         .HasColumnType("smallint")
                         .HasColumnName("departamento_id");
 
-                    b.Property<string>("Direccion")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasColumnName("direccion");
-
                     b.Property<byte>("EstadoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint")
@@ -118,12 +116,6 @@ namespace AMM.Infrastructure.Migrations
                     b.Property<int?>("MunicipioId")
                         .HasColumnType("int")
                         .HasColumnName("municipio_id");
-
-                    b.Property<string>("ObjetoInterventor")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("objeto_interventor");
 
                     b.Property<string>("Observacion")
                         .HasMaxLength(500)

@@ -1,6 +1,5 @@
 namespace AMM.Application.DTOs.Eventos;
 
-// Base Evento DTO
 public record EventoDto(
     long Id,
     byte EventoTipoId,
@@ -8,7 +7,6 @@ public record EventoDto(
     long PacienteId,
     string PacienteNombre,
     DateTime Fecha,
-    string? Observacion,
     byte EstadoId,
     string Estado
 );
@@ -17,184 +15,112 @@ public record CrearEventoRequest(
     byte EventoTipoId,
     long PacienteId,
     DateTime Fecha,
-    string? Observacion,
     byte EstadoId
 );
 
 // Escabiosis
-public record EscabiosisDto(
-    long Id,
-    byte EventoTipoId,
-    string EventoTipo,
-    long PacienteId,
-    string PacienteNombre,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    string Estado,
-    bool? Tratado,
-    bool? CierreControl
-) : EventoDto(Id, EventoTipoId, EventoTipo, PacienteId, PacienteNombre, Fecha, Observacion, EstadoId, Estado);
+public record EventoEscabiosisDto(
+    long EventoId,
+    byte? Severidad,
+    string? Localizacion
+);
 
-public record CrearEscabiosisRequest(
-    byte EventoTipoId,
-    long PacienteId,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    bool? Tratado,
-    bool? CierreControl
-) : CrearEventoRequest(EventoTipoId, PacienteId, Fecha, Observacion, EstadoId);
+public record CrearEventoEscabiosisRequest(
+    long EventoId,
+    byte? Severidad,
+    string? Localizacion
+);
 
 // Geohelmintiasis
-public record GeohelmintiasisDto(
-    long Id,
-    byte EventoTipoId,
-    string EventoTipo,
-    long PacienteId,
-    string PacienteNombre,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    string Estado,
-    bool? Tratado,
-    bool? CierreControl,
-    bool? Laboratorio
-) : EventoDto(Id, EventoTipoId, EventoTipo, PacienteId, PacienteNombre, Fecha, Observacion, EstadoId, Estado);
+public record EventoGeohelmintiasisDto(
+    long EventoId,
+    string? TipoPrueba,
+    string? Resultado
+);
 
-public record CrearGeohelmintiasisRequest(
-    byte EventoTipoId,
-    long PacienteId,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    bool? Tratado,
-    bool? CierreControl,
-    bool? Laboratorio
-) : CrearEventoRequest(EventoTipoId, PacienteId, Fecha, Observacion, EstadoId);
+public record CrearEventoGeohelmintiasisRequest(
+    long EventoId,
+    string? TipoPrueba,
+    string? Resultado
+);
 
 // Pediculosis
-public record PediculosisDto(
-    long Id,
-    byte EventoTipoId,
-    string EventoTipo,
-    long PacienteId,
-    string PacienteNombre,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    string Estado,
-    bool? Tratado,
-    bool? CierreControl
-) : EventoDto(Id, EventoTipoId, EventoTipo, PacienteId, PacienteNombre, Fecha, Observacion, EstadoId, Estado);
+public record EventoPediculosisDto(
+    long EventoId,
+    byte? Grado
+);
 
-public record CrearPediculosisRequest(
-    byte EventoTipoId,
-    long PacienteId,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    bool? Tratado,
-    bool? CierreControl
-) : CrearEventoRequest(EventoTipoId, PacienteId, Fecha, Observacion, EstadoId);
+public record CrearEventoPediculosisRequest(
+    long EventoId,
+    byte? Grado
+);
+
+// Pian
+public record EventoPianDto(
+    long EventoId,
+    string? Estadio
+);
+
+public record CrearEventoPianRequest(
+    long EventoId,
+    string? Estadio
+);
+
+// Teniasis/Cisticercosis
+public record EventoTeniasisCisticercosisDto(
+    long EventoId,
+    bool? Teniasis,
+    bool? Cisticercosis
+);
+
+public record CrearEventoTeniasisCisticercosisRequest(
+    long EventoId,
+    bool? Teniasis,
+    bool? Cisticercosis
+);
+
+// Tracoma
+public record EventoTracomaDto(
+    long EventoId,
+    int? CriterioExclusionId,
+    bool? ExaminadoTt,
+    byte? Triquiasis,
+    string? OpacidadCorneal
+);
+
+public record CrearEventoTracomaRequest(
+    long EventoId,
+    int? CriterioExclusionId,
+    bool? ExaminadoTt,
+    byte? Triquiasis,
+    string? OpacidadCorneal
+);
+
+// Tungiasis
+public record EventoTungiasisDto(
+    long EventoId,
+    int? NumeroLesiones,
+    string? Complicaciones
+);
+
+public record CrearEventoTungiasisRequest(
+    long EventoId,
+    int? NumeroLesiones,
+    string? Complicaciones
+);
 
 // Malaria
-public record MalariaDto(
-    long Id,
-    byte EventoTipoId,
-    string EventoTipo,
-    long PacienteId,
-    string PacienteNombre,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    string Estado,
-    bool? Gota,
-    string? Resultado
-) : EventoDto(Id, EventoTipoId, EventoTipo, PacienteId, PacienteNombre, Fecha, Observacion, EstadoId, Estado);
-
-public record CrearMalariaRequest(
-    byte EventoTipoId,
-    long PacienteId,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    bool? Gota,
-    string? Resultado
-) : CrearEventoRequest(EventoTipoId, PacienteId, Fecha, Observacion, EstadoId);
+public record EventoMalariaDto(long EventoId, string? Especie);
+public record CrearEventoMalariaRequest(long EventoId, string? Especie);
 
 // Tuberculosis
-public record TuberculosisDto(
-    long Id,
-    byte EventoTipoId,
-    string EventoTipo,
-    long PacienteId,
-    string PacienteNombre,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    string Estado,
-    bool? Sintomatico,
-    string? Resultado
-) : EventoDto(Id, EventoTipoId, EventoTipo, PacienteId, PacienteNombre, Fecha, Observacion, EstadoId, Estado);
-
-public record CrearTuberculosisRequest(
-    byte EventoTipoId,
-    long PacienteId,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    bool? Sintomatico,
-    string? Resultado
-) : CrearEventoRequest(EventoTipoId, PacienteId, Fecha, Observacion, EstadoId);
+public record EventoTuberculosisDto(long EventoId, string? TipoTuberculosis);
+public record CrearEventoTuberculosisRequest(long EventoId, string? TipoTuberculosis);
 
 // TuberculosisContacto
-public record TuberculosisContactoDto(
-    long Id,
-    byte EventoTipoId,
-    string EventoTipo,
-    long PacienteId,
-    string PacienteNombre,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    string Estado,
-    long? IndexId,
-    byte? ParentescoId,
-    string? Parentesco
-) : EventoDto(Id, EventoTipoId, EventoTipo, PacienteId, PacienteNombre, Fecha, Observacion, EstadoId, Estado);
-
-public record CrearTuberculosisContactoRequest(
-    byte EventoTipoId,
-    long PacienteId,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    long? IndexId,
-    byte? ParentescoId
-) : CrearEventoRequest(EventoTipoId, PacienteId, Fecha, Observacion, EstadoId);
+public record EventoTuberculosisContactoDto(long EventoId, string? Observacion);
+public record CrearEventoTuberculosisContactoRequest(long EventoId, string? Observacion);
 
 // LeshmaniasisCutanea
-public record LeshmaniasisCutaneaDto(
-    long Id,
-    byte EventoTipoId,
-    string EventoTipo,
-    long PacienteId,
-    string PacienteNombre,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    string Estado,
-    bool? Cicatriz,
-    int? NumeroLesiones
-) : EventoDto(Id, EventoTipoId, EventoTipo, PacienteId, PacienteNombre, Fecha, Observacion, EstadoId, Estado);
-
-public record CrearLeshmaniasisCutaneaRequest(
-    byte EventoTipoId,
-    long PacienteId,
-    DateTime Fecha,
-    string? Observacion,
-    byte EstadoId,
-    bool? Cicatriz,
-    int? NumeroLesiones
-) : CrearEventoRequest(EventoTipoId, PacienteId, Fecha, Observacion, EstadoId);
+public record EventoLeshmaniasisCutaneaDto(long EventoId, string? TipoLesion);
+public record CrearEventoLeshmaniasisCutaneaRequest(long EventoId, string? TipoLesion);

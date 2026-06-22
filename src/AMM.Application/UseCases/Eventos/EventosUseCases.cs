@@ -6,161 +6,143 @@ using AMM.Domain.Ports.Repositories;
 
 namespace AMM.Application.UseCases.Eventos;
 
-// Base use case para eventos con lógica común
-public abstract class EventoBaseUseCase<TEntity, TDto, TCreateRequest, TId> : CatalogoUseCase<TEntity, TDto, TCreateRequest, TId>
-    where TEntity : Evento
-    where TDto : EventoDto
-    where TCreateRequest : CrearEventoRequest
+public class EventoUseCase : CatalogoUseCase<Evento, EventoDto, CrearEventoRequest, long>
 {
-    protected EventoBaseUseCase(ICatalogRepository<TEntity> repository) : base(repository) { }
+    public EventoUseCase(IEventoRepository repository) : base(repository) { }
 
-    protected static string GetPacienteNombre(Paciente? paciente) =>
-        paciente != null ? $"{paciente.PrimerNombre} {paciente.PrimerApellido}" : "";
+    public Task<IReadOnlyList<EventoDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "",
+            e.PacienteId, GetPacienteNombre(e.Paciente), e.Fecha, e.EstadoId, e.Estado?.Nombre ?? ""), ct);
+
+    public Task<EventoDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
+        GetByIdAsync(id, e => new EventoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "",
+            e.PacienteId, GetPacienteNombre(e.Paciente), e.Fecha, e.EstadoId, e.Estado?.Nombre ?? ""), ct);
+
+    public Task<PagedResult<EventoDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
+        GetAllPagedAsync(e => new EventoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "",
+            e.PacienteId, GetPacienteNombre(e.Paciente), e.Fecha, e.EstadoId, e.Estado?.Nombre ?? ""), page, pageSize, ct);
+
+    private static string GetPacienteNombre(Paciente? p) =>
+        p != null ? $"{p.PrimerNombre} {p.PrimerApellido}" : "";
 }
 
-// Escabiosis
-public class EscabiosisUseCase : EventoBaseUseCase<Escabiosis, EscabiosisDto, CrearEscabiosisRequest, long>
+public class EventoEscabiosisUseCase : CatalogoUseCase<EventoEscabiosis, EventoEscabiosisDto, CrearEventoEscabiosisRequest, long>
 {
-    public EscabiosisUseCase(IEscabiosisRepository repository) : base(repository) { }
+    public EventoEscabiosisUseCase(IEventoEscabiosisRepository repository) : base(repository) { }
 
-    public Task<IReadOnlyList<EscabiosisDto>> GetAllAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new EscabiosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
-            e.Tratado, e.CierreControl), ct);
+    public Task<IReadOnlyList<EventoEscabiosisDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoEscabiosisDto(e.EventoId, e.Severidad, e.Localizacion), ct);
 
-    public Task<EscabiosisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new EscabiosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Tratado, e.CierreControl), ct);
-
-    public Task<PagedResult<EscabiosisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
-        GetAllPagedAsync(e => new EscabiosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Tratado, e.CierreControl), page, pageSize, ct);
+    public Task<EventoEscabiosisDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoEscabiosisDto(e.EventoId, e.Severidad, e.Localizacion), ct);
 }
 
-// Geohelmintiasis
-public class GeohelmintiasisUseCase : EventoBaseUseCase<Geohelmintiasis, GeohelmintiasisDto, CrearGeohelmintiasisRequest, long>
+public class EventoGeohelmintiasisUseCase : CatalogoUseCase<EventoGeohelmintiasis, EventoGeohelmintiasisDto, CrearEventoGeohelmintiasisRequest, long>
 {
-    public GeohelmintiasisUseCase(IGeohelmintiasisRepository repository) : base(repository) { }
+    public EventoGeohelmintiasisUseCase(IEventoGeohelmintiasisRepository repository) : base(repository) { }
 
-    public Task<IReadOnlyList<GeohelmintiasisDto>> GetAllAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new GeohelmintiasisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
-            e.Tratado, e.CierreControl, e.Laboratorio), ct);
+    public Task<IReadOnlyList<EventoGeohelmintiasisDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoGeohelmintiasisDto(e.EventoId, e.TipoPrueba, e.Resultado), ct);
 
-    public Task<GeohelmintiasisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new GeohelmintiasisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Tratado, e.CierreControl, e.Laboratorio), ct);
-
-    public Task<PagedResult<GeohelmintiasisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
-        GetAllPagedAsync(e => new GeohelmintiasisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Tratado, e.CierreControl, e.Laboratorio), page, pageSize, ct);
+    public Task<EventoGeohelmintiasisDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoGeohelmintiasisDto(e.EventoId, e.TipoPrueba, e.Resultado), ct);
 }
 
-// Pediculosis
-public class PediculosisUseCase : EventoBaseUseCase<Pediculosis, PediculosisDto, CrearPediculosisRequest, long>
+public class EventoPediculosisUseCase : CatalogoUseCase<EventoPediculosis, EventoPediculosisDto, CrearEventoPediculosisRequest, long>
 {
-    public PediculosisUseCase(IPediculosisRepository repository) : base(repository) { }
+    public EventoPediculosisUseCase(IEventoPediculosisRepository repository) : base(repository) { }
 
-    public Task<IReadOnlyList<PediculosisDto>> GetAllAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new PediculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
-            e.Tratado, e.CierreControl), ct);
+    public Task<IReadOnlyList<EventoPediculosisDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoPediculosisDto(e.EventoId, e.Grado), ct);
 
-    public Task<PediculosisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new PediculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Tratado, e.CierreControl), ct);
-
-    public Task<PagedResult<PediculosisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
-        GetAllPagedAsync(e => new PediculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Tratado, e.CierreControl), page, pageSize, ct);
+    public Task<EventoPediculosisDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoPediculosisDto(e.EventoId, e.Grado), ct);
 }
 
-// Malaria
-public class MalariaUseCase : EventoBaseUseCase<Malaria, MalariaDto, CrearMalariaRequest, long>
+public class EventoPianUseCase : CatalogoUseCase<EventoPian, EventoPianDto, CrearEventoPianRequest, long>
 {
-    public MalariaUseCase(IMalariaRepository repository) : base(repository) { }
+    public EventoPianUseCase(IEventoPianRepository repository) : base(repository) { }
 
-    public Task<IReadOnlyList<MalariaDto>> GetAllAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new MalariaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
-            e.Gota, e.Resultado), ct);
+    public Task<IReadOnlyList<EventoPianDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoPianDto(e.EventoId, e.Estadio), ct);
 
-    public Task<MalariaDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new MalariaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Gota, e.Resultado), ct);
-
-    public Task<PagedResult<MalariaDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
-        GetAllPagedAsync(e => new MalariaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Gota, e.Resultado), page, pageSize, ct);
+    public Task<EventoPianDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoPianDto(e.EventoId, e.Estadio), ct);
 }
 
-// Tuberculosis
-public class TuberculosisUseCase : EventoBaseUseCase<Tuberculosis, TuberculosisDto, CrearTuberculosisRequest, long>
+public class EventoTeniasisCisticercosisUseCase : CatalogoUseCase<EventoTeniasisCisticercosis, EventoTeniasisCisticercosisDto, CrearEventoTeniasisCisticercosisRequest, long>
 {
-    public TuberculosisUseCase(ITuberculosisRepository repository) : base(repository) { }
+    public EventoTeniasisCisticercosisUseCase(IEventoTeniasisCisticercosisRepository repository) : base(repository) { }
 
-    public Task<IReadOnlyList<TuberculosisDto>> GetAllAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new TuberculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
-            e.Sintomatico, e.Resultado), ct);
+    public Task<IReadOnlyList<EventoTeniasisCisticercosisDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoTeniasisCisticercosisDto(e.EventoId, e.Teniasis, e.Cisticercosis), ct);
 
-    public Task<TuberculosisDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new TuberculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Sintomatico, e.Resultado), ct);
-
-    public Task<PagedResult<TuberculosisDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
-        GetAllPagedAsync(e => new TuberculosisDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Sintomatico, e.Resultado), page, pageSize, ct);
+    public Task<EventoTeniasisCisticercosisDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoTeniasisCisticercosisDto(e.EventoId, e.Teniasis, e.Cisticercosis), ct);
 }
 
-// TuberculosisContacto
-public class TuberculosisContactoUseCase : EventoBaseUseCase<TuberculosisContacto, TuberculosisContactoDto, CrearTuberculosisContactoRequest, long>
+public class EventoTracomaUseCase : CatalogoUseCase<EventoTracoma, EventoTracomaDto, CrearEventoTracomaRequest, long>
 {
-    public TuberculosisContactoUseCase(ITuberculosisContactoRepository repository) : base(repository) { }
+    public EventoTracomaUseCase(IEventoTracomaRepository repository) : base(repository) { }
 
-    public Task<IReadOnlyList<TuberculosisContactoDto>> GetAllAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new TuberculosisContactoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
-            e.IndexId, e.ParentescoId, e.Parentesco?.Descripcion), ct);
+    public Task<IReadOnlyList<EventoTracomaDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoTracomaDto(e.EventoId, e.CriterioExclusionId, e.ExaminadoTt, e.Triquiasis, e.OpacidadCorneal), ct);
 
-    public Task<TuberculosisContactoDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new TuberculosisContactoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.IndexId, e.ParentescoId, e.Parentesco?.Descripcion), ct);
-
-    public Task<PagedResult<TuberculosisContactoDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
-        GetAllPagedAsync(e => new TuberculosisContactoDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.IndexId, e.ParentescoId, e.Parentesco?.Descripcion), page, pageSize, ct);
+    public Task<EventoTracomaDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoTracomaDto(e.EventoId, e.CriterioExclusionId, e.ExaminadoTt, e.Triquiasis, e.OpacidadCorneal), ct);
 }
 
-// LeshmaniasisCutanea
-public class LeshmaniasisCutaneaUseCase : EventoBaseUseCase<LeshmaniasisCutanea, LeshmaniasisCutaneaDto, CrearLeshmaniasisCutaneaRequest, long>
+public class EventoTungiasisUseCase : CatalogoUseCase<EventoTungiasis, EventoTungiasisDto, CrearEventoTungiasisRequest, long>
 {
-    public LeshmaniasisCutaneaUseCase(ILeshmaniasisCutaneaRepository repository) : base(repository) { }
+    public EventoTungiasisUseCase(IEventoTungiasisRepository repository) : base(repository) { }
 
-    public Task<IReadOnlyList<LeshmaniasisCutaneaDto>> GetAllAsync(CancellationToken ct = default) =>
-        GetAllAsync(e => new LeshmaniasisCutaneaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId, 
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "", 
-            e.Cicatriz, e.NumeroLesiones), ct);
+    public Task<IReadOnlyList<EventoTungiasisDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoTungiasisDto(e.EventoId, e.NumeroLesiones, e.Complicaciones), ct);
 
-    public Task<LeshmaniasisCutaneaDto?> GetByIdAsync(long id, CancellationToken ct = default) =>
-        GetByIdAsync(id, e => new LeshmaniasisCutaneaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Cicatriz, e.NumeroLesiones), ct);
+    public Task<EventoTungiasisDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoTungiasisDto(e.EventoId, e.NumeroLesiones, e.Complicaciones), ct);
+}
 
-    public Task<PagedResult<LeshmaniasisCutaneaDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default) =>
-        GetAllPagedAsync(e => new LeshmaniasisCutaneaDto(e.Id, e.EventoTipoId, e.EventoTipo?.Nombre ?? "", e.PacienteId,
-            GetPacienteNombre(e.Paciente), e.Fecha, e.Observacion, e.EstadoId, e.Estado?.Nombre ?? "",
-            e.Cicatriz, e.NumeroLesiones), page, pageSize, ct);
+public class EventoMalariaUseCase : CatalogoUseCase<EventoMalaria, EventoMalariaDto, CrearEventoMalariaRequest, long>
+{
+    public EventoMalariaUseCase(IEventoMalariaRepository repository) : base(repository) { }
+
+    public Task<IReadOnlyList<EventoMalariaDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoMalariaDto(e.EventoId, e.Especie), ct);
+
+    public Task<EventoMalariaDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoMalariaDto(e.EventoId, e.Especie), ct);
+}
+
+public class EventoTuberculosisUseCase : CatalogoUseCase<EventoTuberculosis, EventoTuberculosisDto, CrearEventoTuberculosisRequest, long>
+{
+    public EventoTuberculosisUseCase(IEventoTuberculosisRepository repository) : base(repository) { }
+
+    public Task<IReadOnlyList<EventoTuberculosisDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoTuberculosisDto(e.EventoId, e.TipoTuberculosis), ct);
+
+    public Task<EventoTuberculosisDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoTuberculosisDto(e.EventoId, e.TipoTuberculosis), ct);
+}
+
+public class EventoTuberculosisContactoUseCase : CatalogoUseCase<EventoTuberculosisContacto, EventoTuberculosisContactoDto, CrearEventoTuberculosisContactoRequest, long>
+{
+    public EventoTuberculosisContactoUseCase(IEventoTuberculosisContactoRepository repository) : base(repository) { }
+
+    public Task<IReadOnlyList<EventoTuberculosisContactoDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoTuberculosisContactoDto(e.EventoId, e.Observacion), ct);
+
+    public Task<EventoTuberculosisContactoDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoTuberculosisContactoDto(e.EventoId, e.Observacion), ct);
+}
+
+public class EventoLeshmaniasisCutaneaUseCase : CatalogoUseCase<EventoLeshmaniasisCutanea, EventoLeshmaniasisCutaneaDto, CrearEventoLeshmaniasisCutaneaRequest, long>
+{
+    public EventoLeshmaniasisCutaneaUseCase(IEventoLeshmaniasisCutaneaRepository repository) : base(repository) { }
+
+    public Task<IReadOnlyList<EventoLeshmaniasisCutaneaDto>> GetAllAsync(CancellationToken ct = default) =>
+        GetAllAsync(e => new EventoLeshmaniasisCutaneaDto(e.EventoId, e.TipoLesion), ct);
+
+    public Task<EventoLeshmaniasisCutaneaDto?> GetByIdAsync(long eventoId, CancellationToken ct = default) =>
+        GetByIdAsync(eventoId, e => new EventoLeshmaniasisCutaneaDto(e.EventoId, e.TipoLesion), ct);
 }

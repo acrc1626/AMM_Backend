@@ -67,13 +67,17 @@ public static class DependencyInjection
 
         // Eventos repositories
         services.AddScoped<AMM.Domain.Ports.Repositories.IEventoRepository, Repositories.EventoRepository>();
-        services.AddScoped<AMM.Domain.Ports.Repositories.IEscabiosisRepository, Repositories.EscabiosisRepository>();
-        services.AddScoped<AMM.Domain.Ports.Repositories.IGeohelmintiasisRepository, Repositories.GeohelmintiasisRepository>();
-        services.AddScoped<AMM.Domain.Ports.Repositories.IPediculosisRepository, Repositories.PediculosisRepository>();
-        services.AddScoped<AMM.Domain.Ports.Repositories.IMalariaRepository, Repositories.MalariaRepository>();
-        services.AddScoped<AMM.Domain.Ports.Repositories.ITuberculosisRepository, Repositories.TuberculosisRepository>();
-        services.AddScoped<AMM.Domain.Ports.Repositories.ITuberculosisContactoRepository, Repositories.TuberculosisContactoRepository>();
-        services.AddScoped<AMM.Domain.Ports.Repositories.ILeshmaniasisCutaneaRepository, Repositories.LeshmaniasisCutaneaRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoEscabiosisRepository, Repositories.EventoEscabiosisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoGeohelmintiasisRepository, Repositories.EventoGeohelmintiasisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoPediculosisRepository, Repositories.EventoPediculosisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoPianRepository, Repositories.EventoPianRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoTeniasisCisticercosisRepository, Repositories.EventoTeniasisCisticercosisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoTracomaRepository, Repositories.EventoTracomaRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoTungiasisRepository, Repositories.EventoTungiasisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoMalariaRepository, Repositories.EventoMalariaRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoTuberculosisRepository, Repositories.EventoTuberculosisRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoTuberculosisContactoRepository, Repositories.EventoTuberculosisContactoRepository>();
+        services.AddScoped<AMM.Domain.Ports.Repositories.IEventoLeshmaniasisCutaneaRepository, Repositories.EventoLeshmaniasisCutaneaRepository>();
 
         return services;
     }

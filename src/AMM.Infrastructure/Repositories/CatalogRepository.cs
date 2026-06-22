@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using System.Reflection;
 using AMM.Domain.Ports.Repositories;
 using AMM.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -36,11 +38,26 @@ public class CatalogRepository<T> : ICatalogRepository<T> where T : class
 
     public virtual async Task<IReadOnlyList<T>> GetPagedAsync(int skip, int take, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.AsNoTracking()
-            .OrderBy(e => EF.Property<object>(e, "Id"))
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync(cancellationToken);
+        // EF.Property<object> cannot be translated to SQL ORDER BY.
+        // Use reflection to build a typed OrderBy expression from the actual PK type.
+        var keyProp = _context.Model.FindEntityType(typeof(T))
+            ?.FindPrimaryKey()?.Properties.FirstOrDefault();
+
+        IQueryable<T> query = _dbSet.AsNoTracking();
+
+        if (keyProp?.PropertyInfo is PropertyInfo pi)
+        {
+            var param = Expression.Parameter(typeof(T), "e");
+            var body  = Expression.Property(param, pi);
+            var lambda = Expression.Lambda(body, param);
+            var orderByMethod = typeof(Queryable)
+                .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                .First(m => m.Name == nameof(Queryable.OrderBy) && m.GetParameters().Length == 2)
+                .MakeGenericMethod(typeof(T), pi.PropertyType);
+            query = (IQueryable<T>)orderByMethod.Invoke(null, [query, lambda])!;
+        }
+
+        return await query.Skip(skip).Take(take).ToListAsync(cancellationToken);
     }
 
     public virtual async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)

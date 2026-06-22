@@ -29,102 +29,57 @@ public class EventoRepository : CatalogRepository<Evento>, IEventoRepository
     }
 }
 
-public class EscabiosisRepository : CatalogRepository<Escabiosis>, IEscabiosisRepository
+public class EventoEscabiosisRepository : CatalogRepository<EventoEscabiosis>, IEventoEscabiosisRepository
 {
-    public EscabiosisRepository(AmmDbContext context) : base(context) { }
-
-    public override async Task<IReadOnlyList<Escabiosis>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbSet
-            .Include(e => e.EventoTipo)
-            .Include(e => e.Paciente)
-            .Include(e => e.Estado)
-            .ToListAsync(cancellationToken);
-    }
+    public EventoEscabiosisRepository(AmmDbContext context) : base(context) { }
 }
 
-public class GeohelmintiasisRepository : CatalogRepository<Geohelmintiasis>, IGeohelmintiasisRepository
+public class EventoGeohelmintiasisRepository : CatalogRepository<EventoGeohelmintiasis>, IEventoGeohelmintiasisRepository
 {
-    public GeohelmintiasisRepository(AmmDbContext context) : base(context) { }
-
-    public override async Task<IReadOnlyList<Geohelmintiasis>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbSet
-            .Include(e => e.EventoTipo)
-            .Include(e => e.Paciente)
-            .Include(e => e.Estado)
-            .ToListAsync(cancellationToken);
-    }
+    public EventoGeohelmintiasisRepository(AmmDbContext context) : base(context) { }
 }
 
-public class PediculosisRepository : CatalogRepository<Pediculosis>, IPediculosisRepository
+public class EventoPediculosisRepository : CatalogRepository<EventoPediculosis>, IEventoPediculosisRepository
 {
-    public PediculosisRepository(AmmDbContext context) : base(context) { }
-
-    public override async Task<IReadOnlyList<Pediculosis>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbSet
-            .Include(e => e.EventoTipo)
-            .Include(e => e.Paciente)
-            .Include(e => e.Estado)
-            .ToListAsync(cancellationToken);
-    }
+    public EventoPediculosisRepository(AmmDbContext context) : base(context) { }
 }
 
-public class MalariaRepository : CatalogRepository<Malaria>, IMalariaRepository
+public class EventoPianRepository : CatalogRepository<EventoPian>, IEventoPianRepository
 {
-    public MalariaRepository(AmmDbContext context) : base(context) { }
-
-    public override async Task<IReadOnlyList<Malaria>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbSet
-            .Include(e => e.EventoTipo)
-            .Include(e => e.Paciente)
-            .Include(e => e.Estado)
-            .ToListAsync(cancellationToken);
-    }
+    public EventoPianRepository(AmmDbContext context) : base(context) { }
 }
 
-public class TuberculosisRepository : CatalogRepository<Tuberculosis>, ITuberculosisRepository
+public class EventoTeniasisCisticercosisRepository : CatalogRepository<EventoTeniasisCisticercosis>, IEventoTeniasisCisticercosisRepository
 {
-    public TuberculosisRepository(AmmDbContext context) : base(context) { }
-
-    public override async Task<IReadOnlyList<Tuberculosis>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbSet
-            .Include(e => e.EventoTipo)
-            .Include(e => e.Paciente)
-            .Include(e => e.Estado)
-            .ToListAsync(cancellationToken);
-    }
+    public EventoTeniasisCisticercosisRepository(AmmDbContext context) : base(context) { }
 }
 
-public class TuberculosisContactoRepository : CatalogRepository<TuberculosisContacto>, ITuberculosisContactoRepository
+public class EventoTracomaRepository : CatalogRepository<EventoTracoma>, IEventoTracomaRepository
 {
-    public TuberculosisContactoRepository(AmmDbContext context) : base(context) { }
-
-    public override async Task<IReadOnlyList<TuberculosisContacto>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbSet
-            .Include(e => e.EventoTipo)
-            .Include(e => e.Paciente)
-            .Include(e => e.Estado)
-            .Include(e => e.Index)
-            .Include(e => e.Parentesco)
-            .ToListAsync(cancellationToken);
-    }
+    public EventoTracomaRepository(AmmDbContext context) : base(context) { }
 }
 
-public class LeshmaniasisCutaneaRepository : CatalogRepository<LeshmaniasisCutanea>, ILeshmaniasisCutaneaRepository
+public class EventoTungiasisRepository : CatalogRepository<EventoTungiasis>, IEventoTungiasisRepository
 {
-    public LeshmaniasisCutaneaRepository(AmmDbContext context) : base(context) { }
+    public EventoTungiasisRepository(AmmDbContext context) : base(context) { }
+}
 
-    public override async Task<IReadOnlyList<LeshmaniasisCutanea>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbSet
-            .Include(e => e.EventoTipo)
-            .Include(e => e.Paciente)
-            .Include(e => e.Estado)
-            .ToListAsync(cancellationToken);
-    }
+public class EventoMalariaRepository : CatalogRepository<EventoMalaria>, IEventoMalariaRepository
+{
+    public EventoMalariaRepository(AmmDbContext context) : base(context) { }
+}
+
+public class EventoTuberculosisRepository : CatalogRepository<EventoTuberculosis>, IEventoTuberculosisRepository
+{
+    public EventoTuberculosisRepository(AmmDbContext context) : base(context) { }
+}
+
+public class EventoTuberculosisContactoRepository : CatalogRepository<EventoTuberculosisContacto>, IEventoTuberculosisContactoRepository
+{
+    public EventoTuberculosisContactoRepository(AmmDbContext context) : base(context) { }
+}
+
+public class EventoLeshmaniasisCutaneaRepository : CatalogRepository<EventoLeshmaniasisCutanea>, IEventoLeshmaniasisCutaneaRepository
+{
+    public EventoLeshmaniasisCutaneaRepository(AmmDbContext context) : base(context) { }
 }

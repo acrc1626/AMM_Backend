@@ -4,6 +4,7 @@ using AMM.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMM.Infrastructure.Migrations
 {
     [DbContext(typeof(AmmDbContext))]
-    partial class AmmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621053934_AddTipoToTipoDocumento")]
+    partial class AddTipoToTipoDocumento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,12 +61,6 @@ namespace AMM.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Area")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("area");
-
                     b.Property<DateTime>("CreadoEn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2(0)")
@@ -79,11 +76,6 @@ namespace AMM.Infrastructure.Migrations
                         .HasColumnType("smallint")
                         .HasColumnName("departamento_id");
 
-                    b.Property<string>("Direccion")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasColumnName("direccion");
-
                     b.Property<byte>("EstadoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint")
@@ -93,18 +85,6 @@ namespace AMM.Infrastructure.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("date")
                         .HasColumnName("fecha");
-
-                    b.Property<string>("Geolocalizacion")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("geolocalizacion");
-
-                    b.Property<string>("Microterritorio")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("microterritorio");
 
                     b.Property<DateTime?>("ModificadoEn")
                         .HasColumnType("datetime2(0)")
@@ -119,42 +99,18 @@ namespace AMM.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnName("municipio_id");
 
-                    b.Property<string>("ObjetoInterventor")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("objeto_interventor");
-
                     b.Property<string>("Observacion")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("observacion");
 
-                    b.Property<string>("Territorio")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("territorio");
-
                     b.Property<byte>("TipoEntornoId")
                         .HasColumnType("tinyint")
                         .HasColumnName("tipo_entorno_id");
 
-                    b.Property<int?>("TotalMiembros")
-                        .HasColumnType("int")
-                        .HasColumnName("total_miembros");
-
                     b.Property<long?>("UbicacionId")
                         .HasColumnType("bigint")
                         .HasColumnName("ubicacion_id");
-
-                    b.Property<int?>("VisitantesTemporalesCol")
-                        .HasColumnType("int")
-                        .HasColumnName("visitantes_temporales_col");
-
-                    b.Property<int?>("VisitantesTemporalesMig")
-                        .HasColumnType("int")
-                        .HasColumnName("visitantes_temporales_mig");
 
                     b.HasKey("Id");
 

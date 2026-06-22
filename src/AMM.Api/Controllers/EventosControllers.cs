@@ -1,245 +1,237 @@
-using AMM.Api.Controllers.Base;
-using AMM.Application.DTOs.Common;
 using AMM.Application.DTOs.Eventos;
 using AMM.Application.UseCases.Eventos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMM.Api.Controllers;
 
+[Authorize]
 [ApiController]
-[Route("api/[controller]")]
-public class EscabiosisController : CatalogControllerBase<EscabiosisDto, long>
+[Route("api/escabiosis")]
+public class EscabiosisController : ControllerBase
 {
-    private readonly EscabiosisUseCase _useCase;
+    private readonly EventoEscabiosisUseCase _useCase;
 
-    public EscabiosisController(EscabiosisUseCase useCase, ILogger<EscabiosisController> logger) : base(logger)
-    {
-        _useCase = useCase;
-    }
+    public EscabiosisController(EventoEscabiosisUseCase useCase) => _useCase = useCase;
 
     [HttpGet]
-    public override async Task<ActionResult<IReadOnlyList<EscabiosisDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
 
-    [HttpGet("paged")]
-    public async Task<ActionResult<PagedResult<EscabiosisDto>>> GetAllPaged(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        pageSize = Math.Min(pageSize, 100);
-        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
-    }
-
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<EscabiosisDto>> GetById(long id, CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetByIdAsync(id, cancellationToken);
-        return HandleResult(result);
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
 }
 
+[Authorize]
 [ApiController]
-[Route("api/[controller]")]
-public class GeohelmintiasisController : CatalogControllerBase<GeohelmintiasisDto, long>
+[Route("api/geohelmintiasis")]
+public class GeohelmintiasisController : ControllerBase
 {
-    private readonly GeohelmintiasisUseCase _useCase;
+    private readonly EventoGeohelmintiasisUseCase _useCase;
 
-    public GeohelmintiasisController(GeohelmintiasisUseCase useCase, ILogger<GeohelmintiasisController> logger) : base(logger)
-    {
-        _useCase = useCase;
-    }
+    public GeohelmintiasisController(EventoGeohelmintiasisUseCase useCase) => _useCase = useCase;
 
     [HttpGet]
-    public override async Task<ActionResult<IReadOnlyList<GeohelmintiasisDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
 
-    [HttpGet("paged")]
-    public async Task<ActionResult<PagedResult<GeohelmintiasisDto>>> GetAllPaged(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        pageSize = Math.Min(pageSize, 100);
-        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
-    }
-
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<GeohelmintiasisDto>> GetById(long id, CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetByIdAsync(id, cancellationToken);
-        return HandleResult(result);
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
 }
 
+[Authorize]
 [ApiController]
-[Route("api/[controller]")]
-public class PediculosisController : CatalogControllerBase<PediculosisDto, long>
+[Route("api/pediculosis")]
+public class PediculosisController : ControllerBase
 {
-    private readonly PediculosisUseCase _useCase;
+    private readonly EventoPediculosisUseCase _useCase;
 
-    public PediculosisController(PediculosisUseCase useCase, ILogger<PediculosisController> logger) : base(logger)
-    {
-        _useCase = useCase;
-    }
+    public PediculosisController(EventoPediculosisUseCase useCase) => _useCase = useCase;
 
     [HttpGet]
-    public override async Task<ActionResult<IReadOnlyList<PediculosisDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
 
-    [HttpGet("paged")]
-    public async Task<ActionResult<PagedResult<PediculosisDto>>> GetAllPaged(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        pageSize = Math.Min(pageSize, 100);
-        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
-    }
-
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<PediculosisDto>> GetById(long id, CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetByIdAsync(id, cancellationToken);
-        return HandleResult(result);
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
 }
 
+[Authorize]
 [ApiController]
-[Route("api/[controller]")]
-public class MalariaController : CatalogControllerBase<MalariaDto, long>
+[Route("api/pian")]
+public class PianController : ControllerBase
 {
-    private readonly MalariaUseCase _useCase;
+    private readonly EventoPianUseCase _useCase;
 
-    public MalariaController(MalariaUseCase useCase, ILogger<MalariaController> logger) : base(logger)
-    {
-        _useCase = useCase;
-    }
+    public PianController(EventoPianUseCase useCase) => _useCase = useCase;
 
     [HttpGet]
-    public override async Task<ActionResult<IReadOnlyList<MalariaDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
 
-    [HttpGet("paged")]
-    public async Task<ActionResult<PagedResult<MalariaDto>>> GetAllPaged(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        pageSize = Math.Min(pageSize, 100);
-        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
-    }
-
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<MalariaDto>> GetById(long id, CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetByIdAsync(id, cancellationToken);
-        return HandleResult(result);
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
 }
 
+[Authorize]
 [ApiController]
-[Route("api/[controller]")]
-public class TuberculosisController : CatalogControllerBase<TuberculosisDto, long>
+[Route("api/teniasiscisticercosis")]
+public class TeniasisCisticercosisController : ControllerBase
 {
-    private readonly TuberculosisUseCase _useCase;
+    private readonly EventoTeniasisCisticercosisUseCase _useCase;
 
-    public TuberculosisController(TuberculosisUseCase useCase, ILogger<TuberculosisController> logger) : base(logger)
-    {
-        _useCase = useCase;
-    }
+    public TeniasisCisticercosisController(EventoTeniasisCisticercosisUseCase useCase) => _useCase = useCase;
 
     [HttpGet]
-    public override async Task<ActionResult<IReadOnlyList<TuberculosisDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
 
-    [HttpGet("paged")]
-    public async Task<ActionResult<PagedResult<TuberculosisDto>>> GetAllPaged(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        pageSize = Math.Min(pageSize, 100);
-        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
-    }
-
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<TuberculosisDto>> GetById(long id, CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetByIdAsync(id, cancellationToken);
-        return HandleResult(result);
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
 }
 
+[Authorize]
 [ApiController]
-[Route("api/[controller]")]
-public class TuberculosisContactoController : CatalogControllerBase<TuberculosisContactoDto, long>
+[Route("api/tracoma")]
+public class TracomaController : ControllerBase
 {
-    private readonly TuberculosisContactoUseCase _useCase;
+    private readonly EventoTracomaUseCase _useCase;
 
-    public TuberculosisContactoController(TuberculosisContactoUseCase useCase, ILogger<TuberculosisContactoController> logger) : base(logger)
-    {
-        _useCase = useCase;
-    }
+    public TracomaController(EventoTracomaUseCase useCase) => _useCase = useCase;
 
     [HttpGet]
-    public override async Task<ActionResult<IReadOnlyList<TuberculosisContactoDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
 
-    [HttpGet("paged")]
-    public async Task<ActionResult<PagedResult<TuberculosisContactoDto>>> GetAllPaged(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        pageSize = Math.Min(pageSize, 100);
-        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
-    }
-
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<TuberculosisContactoDto>> GetById(long id, CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetByIdAsync(id, cancellationToken);
-        return HandleResult(result);
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
 }
 
+[Authorize]
 [ApiController]
-[Route("api/[controller]")]
-public class LeshmaniasisCutaneaController : CatalogControllerBase<LeshmaniasisCutaneaDto, long>
+[Route("api/tungiasis")]
+public class TungiasisController : ControllerBase
 {
-    private readonly LeshmaniasisCutaneaUseCase _useCase;
+    private readonly EventoTungiasisUseCase _useCase;
 
-    public LeshmaniasisCutaneaController(LeshmaniasisCutaneaUseCase useCase, ILogger<LeshmaniasisCutaneaController> logger) : base(logger)
-    {
-        _useCase = useCase;
-    }
+    public TungiasisController(EventoTungiasisUseCase useCase) => _useCase = useCase;
 
     [HttpGet]
-    public override async Task<ActionResult<IReadOnlyList<LeshmaniasisCutaneaDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await _useCase.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
 
-    [HttpGet("paged")]
-    public async Task<ActionResult<PagedResult<LeshmaniasisCutaneaDto>>> GetAllPaged(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        pageSize = Math.Min(pageSize, 100);
-        return Ok(await _useCase.GetPagedAsync(page, pageSize, cancellationToken));
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
+}
 
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<LeshmaniasisCutaneaDto>> GetById(long id, CancellationToken cancellationToken)
+[Authorize]
+[ApiController]
+[Route("api/malaria")]
+public class MalariaController : ControllerBase
+{
+    private readonly EventoMalariaUseCase _useCase;
+
+    public MalariaController(EventoMalariaUseCase useCase) => _useCase = useCase;
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
+
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
-        var result = await _useCase.GetByIdAsync(id, cancellationToken);
-        return HandleResult(result);
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
+    }
+}
+
+[Authorize]
+[ApiController]
+[Route("api/tuberculosis")]
+public class TuberculosisController : ControllerBase
+{
+    private readonly EventoTuberculosisUseCase _useCase;
+
+    public TuberculosisController(EventoTuberculosisUseCase useCase) => _useCase = useCase;
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
+
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
+    {
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
+    }
+}
+
+[Authorize]
+[ApiController]
+[Route("api/tuberculosiscontacto")]
+public class TuberculosisContactoController : ControllerBase
+{
+    private readonly EventoTuberculosisContactoUseCase _useCase;
+
+    public TuberculosisContactoController(EventoTuberculosisContactoUseCase useCase) => _useCase = useCase;
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
+
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
+    {
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
+    }
+}
+
+[Authorize]
+[ApiController]
+[Route("api/leshmaniasiscutanea")]
+public class LeshmaniasisCutaneaController : ControllerBase
+{
+    private readonly EventoLeshmaniasisCutaneaUseCase _useCase;
+
+    public LeshmaniasisCutaneaController(EventoLeshmaniasisCutaneaUseCase useCase) => _useCase = useCase;
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken ct) =>
+        Ok(await _useCase.GetAllAsync(ct));
+
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> GetById(long id, CancellationToken ct)
+    {
+        var result = await _useCase.GetByIdAsync(id, ct);
+        return result is null ? NotFound() : Ok(result);
     }
 }

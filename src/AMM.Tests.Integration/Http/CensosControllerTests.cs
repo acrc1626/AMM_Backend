@@ -9,12 +9,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace AMM.Tests.Integration.Http;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Pruebas HTTP: CensosController (hereda CatalogControllerBase → [Authorize])
-// La factory siembra un Paciente con Id=100 que se usa como PacienteId.
-// InMemory no impone FKs, por lo que TipoEntornoId puede ser cualquier byte.
-// ─────────────────────────────────────────────────────────────────────────────
-
 public class CensosControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly CustomWebApplicationFactory _factory;
@@ -48,120 +42,260 @@ public class CensosControllerTests : IClassFixture<CustomWebApplicationFactory>
         return client;
     }
 
-    // ── Test 1: sin token → 401 ───────────────────────────────────────────────
-
     [Fact]
     public async Task GetAll_SinToken_Returns401()
     {
-        // Given
         var client = NewClient();
-
-        // When
         var response = await client.GetAsync("/api/censos");
-
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
-    // ── Test 2: POST con PacienteId válido → 201 Created ─────────────────────
+    [Fact]
+    public async Task Crear_CensoHogar_ConJefeHogar_Returns201()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var request = new
+        {
+            TipoEntornoId = 2,   // Hogar
+            Fecha         = DateTime.UtcNow.Date,
+            EstadoId      = (byte)1,
+            Observacion   = "Hogar de prueba",
+            JefeHogar     = new
+            {
+                PacienteId             = CustomWebApplicationFactory.SeedPacienteId,
+                ParentescoId           = (byte?)null,
+                Comunidad              = (string?)null,
+                GrupoPoblacionEspecial = (string?)null,
+                Enfermedades           = Array.Empty<object>()
+            },
+            Personas = Array.Empty<object>()
+        };
+        var response = await client.PostAsync("/api/censos", JsonBody(request));
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
 
     [Fact]
-    public async Task Crear_ConPacienteId_Returns201Created()
+    public async Task Crear_CensoHogar_SinJefeHogar_Returns400()
     {
-        // Given
+        var client = await ClienteAutenticadoAsync();
+        var request = new
+        {
+            TipoEntornoId = 2,   // Hogar requiere JefeHogar
+            Fecha         = DateTime.UtcNow.Date,
+            EstadoId      = (byte)1
+        };
+        var response = await client.PostAsync("/api/censos", JsonBody(request));
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Crear_CensoEducativo_ConJefeHogar_Returns400()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var request = new
+        {
+            TipoEntornoId = 1,   // Educativo NO admite JefeHogar
+            Fecha         = DateTime.UtcNow.Date,
+            EstadoId      = (byte)1,
+            JefeHogar     = new
+            {
+                PacienteId             = CustomWebApplicationFactory.SeedPacienteId,
+                ParentescoId           = (byte?)null,
+                Comunidad              = (string?)null,
+                GrupoPoblacionEspecial = (string?)null,
+                Enfermedades           = Array.Empty<object>()
+            }
+        };
+        var response = await client.PostAsync("/api/censos", JsonBody(request));
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Patch_ConTratamientosYNovedad_Returns204()
+    {
+        // Given — crear un censo nuevo para patchear
+        var client = await ClienteAutenticadoAsync();
+        var createReq = new
+        {
+            TipoEntornoId = 1,
+            Fecha         = DateTime.UtcNow.Date,
+            EstadoId      = (byte)1,
+            Observacion   = "Para PATCH con tratamientos"
+        };
+        var created = await client.PostAsync("/api/censos", JsonBody(createReq));
+        created.StatusCode.Should().Be(HttpStatusCode.Created);
+        var censo = await created.Content
+            .ReadFromJsonAsync<AMM.Application.DTOs.Censos.CensoResumenDto>(JsonOpts);
+
+        var patchRequest = new
+        {
+            Personas = Array.Empty<object>(),
+            Tratamientos = new
+            {
+                Tracoma           = true,
+                Teniasis          = true,
+                RechazaTratamiento = false,
+                EnfermedadRenal   = false,
+                EnfermedadCardiaca = false,
+                Polimedicacion    = false,
+                Alergias          = false,
+                Embarazo          = false,
+                Lactancia         = false,
+                MenorEdad         = false,
+                EnfermedadHepatica = false,
+                TrastornosGastricos = false,
+                Observaciones     = "Test de cobertura"
+            },
+            NovedadCensal = new
+            {
+                Presencia             = "presente",
+                TipoNovedad           = "fallecimiento",
+                FechaFallecimiento    = "2026-01-15",
+                OtraNovedadDetalle    = (string?)null,
+                Observaciones         = "Observación novedad"
+            }
+        };
+        var response = await client.PatchAsync(
+            $"/api/censos/{censo!.Id}", JsonBody(patchRequest));
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Crear_ConDatosValidos_Returns201Created()
+    {
         var client = await ClienteAutenticadoAsync();
         var request = new
         {
             TipoEntornoId = 1,
-            PacienteId    = CustomWebApplicationFactory.SeedPacienteId,
             Fecha         = DateTime.UtcNow.Date,
             EstadoId      = 1,
             Observacion   = "Censo de prueba"
         };
 
-        // When
         var response = await client.PostAsync("/api/censos", JsonBody(request));
 
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var censo = await response.Content
-            .ReadFromJsonAsync<CensoDto>(JsonOpts);
-
+        var censo = await response.Content.ReadFromJsonAsync<CensoDto>(JsonOpts);
         censo.Should().NotBeNull();
         censo!.Id.Should().BeGreaterThan(0);
-        censo.PacienteId.Should().Be(CustomWebApplicationFactory.SeedPacienteId);
-
         response.Headers.Location.Should().NotBeNull("debe incluir Location header");
     }
-
-    // ── Test 3: GET /api/censos/paciente/{id} → 200 ───────────────────────────
-
-    [Fact]
-    public async Task GetByPaciente_Returns200ConLista()
-    {
-        // Given
-        var client = await ClienteAutenticadoAsync();
-
-        // When
-        var response = await client.GetAsync(
-            $"/api/censos/paciente/{CustomWebApplicationFactory.SeedPacienteId}");
-
-        // Then
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var censos = await response.Content
-            .ReadFromJsonAsync<IReadOnlyList<CensoDto>>(JsonOpts);
-
-        censos.Should().NotBeNull("la respuesta debe deserializar correctamente");
-    }
-
-    // ── Test 4: GET /api/censos/{id} existente → 200 + dto correcto ──────────
 
     [Fact]
     public async Task GetById_CensoExistente_Returns200()
     {
-        // Given — el censo sembrado tiene Id = SeedCensoId
         var client = await ClienteAutenticadoAsync();
 
-        // When
         var response = await client.GetAsync(
             $"/api/censos/{CustomWebApplicationFactory.SeedCensoId}");
 
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var censo = await response.Content
-            .ReadFromJsonAsync<CensoDto>(JsonOpts);
-
+        var censo = await response.Content.ReadFromJsonAsync<CensoDto>(JsonOpts);
         censo.Should().NotBeNull();
         censo!.Id.Should().Be(CustomWebApplicationFactory.SeedCensoId);
-        censo.PacienteId.Should().Be(CustomWebApplicationFactory.SeedPacienteId);
     }
-
-    // ── Test 5: PUT /api/censos/{id} → 204 NoContent ─────────────────────────
 
     [Fact]
     public async Task Update_CensoExistente_Returns204NoContent()
     {
-        // Given
         var client = await ClienteAutenticadoAsync();
         var updateRequest = new
         {
             Id            = CustomWebApplicationFactory.SeedCensoId,
             TipoEntornoId = 1,
-            PacienteId    = CustomWebApplicationFactory.SeedPacienteId,
             Fecha         = DateTime.UtcNow.Date,
             EstadoId      = 1,
             Observacion   = "Actualizado"
         };
 
-        // When
         var response = await client.PutAsync(
             $"/api/censos/{CustomWebApplicationFactory.SeedCensoId}",
             JsonBody(updateRequest));
 
-        // Then
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task GetAll_ConToken_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/censos");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetAllPaged_ConToken_Returns200()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/censos/paged?page=1&pageSize=10");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetById_CensoNoExistente_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var response = await client.GetAsync("/api/censos/99999");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Patch_CensoExistente_SinPersonas_Returns204()
+    {
+        // Given — crear un censo nuevo para no afectar el estado de SeedCensoId
+        var client = await ClienteAutenticadoAsync();
+        var createRequest = new
+        {
+            TipoEntornoId = 1,
+            Fecha         = DateTime.UtcNow.Date,
+            EstadoId      = 1,
+            Observacion   = "Censo para PATCH"
+        };
+        var created = await client.PostAsync("/api/censos", JsonBody(createRequest));
+        created.StatusCode.Should().Be(HttpStatusCode.Created);
+        var censo = await created.Content
+            .ReadFromJsonAsync<AMM.Application.DTOs.Censos.CensoResumenDto>(JsonOpts);
+
+        var patchRequest = new
+        {
+            Personas      = (object?)null,
+            Tratamientos  = (object?)null,
+            NovedadCensal = (object?)null
+        };
+        var response = await client.PatchAsync(
+            $"/api/censos/{censo!.Id}",
+            JsonBody(patchRequest));
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Patch_CensoNoExistente_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var request = new
+        {
+            Personas      = (object?)null,
+            Tratamientos  = (object?)null,
+            NovedadCensal = (object?)null
+        };
+        var response = await client.PatchAsync("/api/censos/99999", JsonBody(request));
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Update_CensoNoExistente_Returns404()
+    {
+        var client = await ClienteAutenticadoAsync();
+        var updateRequest = new
+        {
+            Id          = 99999L,
+            Fecha       = DateTime.UtcNow.Date,
+            EstadoId    = 1,
+            Observacion = "No existe"
+        };
+        var response = await client.PutAsync("/api/censos/99999", JsonBody(updateRequest));
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
